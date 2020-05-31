@@ -207,18 +207,50 @@ class MessagesUI : UIView {
     @objc private func didPressSendTextButton(_ sender: Any?) {
         if sendButton.tag == 0 {
             quickEmoji()
-        } else {
+        } else if sendButton.tag == 1 {
             sendText()
+        } else {
+            removeQuickEmoji()
         }
 
     }
     
     /// send a quick Emoji
     private func quickEmoji() {
-        print("send quick Emoji")
         self.addSubview(quickEmojiV)
-        quickEmojiV.anchor(left: leftAnchor,bottom: inputToolbar.topAnchor,right: rightAnchor)
+        self.quickEmojiV.anchor(left: leftAnchor,bottom: inputToolbar.topAnchor,right: rightAnchor)
+        self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0, y: 0)
+        self.sendButton.tag = 2
+        let previouTransform =  sendButton.transform
+        UIView.animate(withDuration: 0.2,animations: {
+        self.sendButton.setBackgroundImage(UIImage(named: "cancel_icon")?.withTintColor(.mainBlue), for: .normal)
+        self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
+        self.quickEmojiV.transform  = .identity
+        },completion: { _ in
+            UIView.animate(withDuration: 0.2) {
+                self.sendButton.transform  = previouTransform
+                }
+        })
         
+        self.layoutIfNeeded()
+    }
+    
+    /// remove a quick Emoji
+    private func removeQuickEmoji() {
+        sendButton.tag = 0
+        let previouTransform =  sendButton.transform
+        UIView.animate(withDuration: 0.2,animations: {
+        self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
+        self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
+        self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.5, y: 0.5)
+        },completion: { _ in
+            UIView.animate(withDuration: 0.2) {
+                self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.0, y: 0.0)
+                self.quickEmojiV.removeFromSuperview()
+                self.sendButton.transform  = previouTransform
+                }
+        })
+        self.layoutIfNeeded()
     }
     
     /// send text message

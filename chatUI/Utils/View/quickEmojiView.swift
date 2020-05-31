@@ -28,7 +28,7 @@ class quickEmojiView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
         stackView.alignment = .fill
-        stackView.layoutMargins = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
     }()
@@ -43,10 +43,10 @@ class quickEmojiView: UIView {
         let width = (UIScreen.main.bounds.width / 8) - 15
         print(width)
         self.addSubview(mainView)
-        mainView.anchor(top:topAnchor,left: leftAnchor,bottom: bottomAnchor,right: rightAnchor,paddingLeft: 10,paddingRight: 20,height: width+10)
+        mainView.anchor(top:topAnchor,left: leftAnchor,bottom: bottomAnchor,right: rightAnchor,paddingLeft: 10,paddingRight: 20,height: width+20)
         
         self.mainView.addSubview(stackView)
-        stackView.anchor(height: width+10)
+        stackView.anchor(height: width+20)
         mainView.frame = frame
         for i in 0..<quickEmojiArray.count {
             let img = UIImageView()
