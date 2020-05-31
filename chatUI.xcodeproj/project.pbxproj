@@ -54,6 +54,7 @@
 		64E444122452611700DA8076 /* StrokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E444112452611700DA8076 /* StrokeSettings.swift */; };
 		64E444142452612300DA8076 /* TouchDrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E444132452612300DA8076 /* TouchDrawView.swift */; };
 		64E444162452612F00DA8076 /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E444152452612F00DA8076 /* Stroke.swift */; };
+		64E6047724845070000FBBE8 /* quickEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E6047624845070000FBBE8 /* quickEmojiView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -107,6 +108,7 @@
 		64E444112452611700DA8076 /* StrokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeSettings.swift; sourceTree = "<group>"; };
 		64E444132452612300DA8076 /* TouchDrawView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchDrawView.swift; sourceTree = "<group>"; };
 		64E444152452612F00DA8076 /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
+		64E6047624845070000FBBE8 /* quickEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = quickEmojiView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +210,7 @@
 		644B2F23244982E7006D2FA5 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				64E6047524845060000FBBE8 /* View */,
 				64E444102452610B00DA8076 /* Drwing */,
 				644B2F2524498396006D2FA5 /* GrowingTextView.swift */,
 				64674E48244AD9DE00E77AFB /* DateHeader.swift */,
@@ -262,6 +265,14 @@
 				64E444152452612F00DA8076 /* Stroke.swift */,
 			);
 			path = Drwing;
+			sourceTree = "<group>";
+		};
+		64E6047524845060000FBBE8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				64E6047624845070000FBBE8 /* quickEmojiView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -377,6 +388,7 @@
 				64E444162452612F00DA8076 /* Stroke.swift in Sources */,
 				64E444092452420700DA8076 /* ImageEditorUI.swift in Sources */,
 				642502EF244E6684002E1785 /* MessageCaptionCell.swift in Sources */,
+				64E6047724845070000FBBE8 /* quickEmojiView.swift in Sources */,
 				64674E45244AD7D700E77AFB /* Date+Extension.swift in Sources */,
 				64E444142452612300DA8076 /* TouchDrawView.swift in Sources */,
 			);

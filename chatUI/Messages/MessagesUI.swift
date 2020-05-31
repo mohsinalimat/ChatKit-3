@@ -138,6 +138,13 @@ class MessagesUI : UIView {
         return view
     }()
     
+    private var quickEmojiV: quickEmojiView = {
+        let view = quickEmojiView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
+    
  
     var buttonViewLeftConstraint = NSLayoutConstraint()
      var textMore = true
@@ -209,6 +216,9 @@ class MessagesUI : UIView {
     /// send a quick Emoji
     private func quickEmoji() {
         print("send quick Emoji")
+        self.addSubview(quickEmojiV)
+        quickEmojiV.anchor(left: leftAnchor,bottom: inputToolbar.topAnchor,right: rightAnchor)
+        
     }
     
     /// send text message
@@ -285,10 +295,10 @@ extension MessagesUI {
         inputToolbar.addSubview(messageTextView)
         inputToolbar.addSubview(sendButton)
         inputToolbar.addSubview(buttonView)
+        inputToolbar.addSubview(audioButton)
         
         buttonView.addSubview(moreButton)
         buttonView.addSubview(mediaButton)
-        buttonView.addSubview(audioButton)
         buttonView.addSubview(emojiButton)
   
          // add constraints to inputToolbar
@@ -296,7 +306,7 @@ extension MessagesUI {
         inputToolbar.anchor(top: tableView.bottomAnchor,left: leftAnchor,bottom: keyboardLayoutGuide.topAnchor,right: rightAnchor)
         buttonViewLeftConstraint = buttonView.leftAnchor.constraint(equalTo: inputToolbar.leftAnchor,constant: 10)
         buttonView.anchor(bottom: messageTextView.bottomAnchor
-            ,paddingBottom: 5,width: 150,height: 25)
+            ,paddingBottom: 5,width: 108,height: 25)
         buttonViewLeftConstraint.isActive = true
         
     }
@@ -309,7 +319,7 @@ extension MessagesUI {
     
         
         sendButton.anchor(bottom: messageTextView.bottomAnchor, right: inputToolbar.rightAnchor,paddingBottom: 5, paddingRight: 10)
-
+        audioButton.anchor(bottom: messageTextView.bottomAnchor, right: messageTextView.rightAnchor,paddingBottom: 5, paddingRight: 5)
         
         
         messageTextView.anchor(top: inputToolbar.topAnchor,left: buttonView.rightAnchor,bottom: inputToolbar.bottomAnchor,right: sendButton.leftAnchor, paddingTop: 5,paddingLeft: 5,paddingBottom: 5,paddingRight: 5)
@@ -317,8 +327,8 @@ extension MessagesUI {
 
         moreButton.centerY(inView: buttonView,leftAnchor: buttonView.leftAnchor)
         mediaButton.centerY(inView: buttonView,leftAnchor: moreButton.rightAnchor,paddingLeft: 15)
-        audioButton.centerY(inView: buttonView,leftAnchor: mediaButton.rightAnchor,paddingLeft: 15)
-        emojiButton.centerY(inView: buttonView,leftAnchor: audioButton.rightAnchor,paddingLeft: 15)
+        emojiButton.centerY(inView: buttonView,leftAnchor: mediaButton.rightAnchor,paddingLeft: 15)
+
        
         
     }
@@ -589,7 +599,7 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
             
              self.layoutIfNeeded()
          } else {
-            buttonViewLeftConstraint.constant = -149
+            buttonViewLeftConstraint.constant = -108
             sendButton.tag = 1
             if textMore == true {
                 UIView.animate(withDuration: 0.2,animations: {
