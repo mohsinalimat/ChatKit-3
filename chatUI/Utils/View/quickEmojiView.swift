@@ -9,8 +9,12 @@
 import Foundation
 import UIKit
 
+protocol quickEmojiDelegate {
+    func EmojiTapped(index: Int)
+}
 class quickEmojiView: UIView {
     
+    var delegate: quickEmojiDelegate?
     
     let quickEmojiArray = ["emoji_1","emoji_2","emoji_3","emoji_4","emoji_5","emoji_6","emoji_7","emoji_8"]
     
@@ -57,8 +61,17 @@ class quickEmojiView: UIView {
             
             stackView.addArrangedSubview(img)
             stackView.spacing = 10
+            let tap = UITapGestureRecognizer(target: self, action: #selector(quickEmojiView.tappedImage))
+            img.addGestureRecognizer(tap)
+            img.isUserInteractionEnabled = true
         }
     
+    }
+    
+    
+    @objc func tappedImage(_ sender: UITapGestureRecognizer) {
+        guard let tag = sender.view?.tag else { return }
+        delegate?.EmojiTapped(index: tag)
     }
     
     

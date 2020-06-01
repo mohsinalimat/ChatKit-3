@@ -58,7 +58,9 @@ class MessagesUI : UIView {
         tbl.register(MessageTextCell.self, forCellReuseIdentifier: MessageTextCell.reuseIdentifier)
         tbl.register(MessageImageCell.self, forCellReuseIdentifier: MessageImageCell.reuseIdentifier)
         tbl.register(MessageCaptionCell.self, forCellReuseIdentifier: MessageCaptionCell.reuseIdentifier)
+        tbl.register(MessageEmojiCell.self, forCellReuseIdentifier: MessageEmojiCell.reuseIdentifier)
         
+    
         return tbl
     }()
     
@@ -218,6 +220,7 @@ class MessagesUI : UIView {
     /// send a quick Emoji
     private func quickEmoji() {
         self.addSubview(quickEmojiV)
+        quickEmojiV.delegate = self
         self.quickEmojiV.anchor(left: leftAnchor,bottom: inputToolbar.topAnchor,right: rightAnchor)
         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0, y: 0)
         self.sendButton.tag = 2
@@ -666,3 +669,54 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
 }
 
 
+extension MessagesUI: quickEmojiDelegate {
+    func EmojiTapped(index: Int) {
+         let randomBool = Bool.random()
+         let now = Date()
+         let NewMessages = Messages(stickerName: quickEmojiV.quickEmojiArray[index], StickerType: .sticker, createdAt: now, isIncoming: randomBool)
+        
+         
+         let diff = Calendar.current.dateComponents([.day], from: now, to: ( messages.last?.last?.createdAt)!)
+          if diff.day == 0 {
+             MessagesViewModel.shared.object[self.messages.count - 1].append(NewMessages)
+               self.messages[self.messages.count - 1].append(NewMessages)
+               self.tableView.reloadData()
+               DispatchQueue.main.async {
+                   let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
+                   let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
+                   self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+                   self.tableView.reloadRows(at: [indexPath], with: .none)
+               }
+             
+         } else {
+             MessagesViewModel.shared.object.insert([NewMessages], at: self.messages.count)
+             self.messages.insert([NewMessages], at: self.messages.count)
+             self.tableView.reloadData()
+             DispatchQueue.main.async {
+                 let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
+                 let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
+                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+                 self.tableView.reloadRows(at: [indexPath], with: .none)
+             }
+         }
+
+         // rest view
+         sendButton.tag = 0
+         let previouTransform =  sendButton.transform
+         UIView.animate(withDuration: 0.2,animations: {
+         self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
+         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
+         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.5, y: 0.5)
+         },completion: { _ in
+             UIView.animate(withDuration: 0.2) {
+                 self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.0, y: 0.0)
+                 self.quickEmojiV.removeFromSuperview()
+                 self.sendButton.transform  = previouTransform
+                 }
+         })
+         self.layoutIfNeeded()
+    }
+    
+    
+    
+}
