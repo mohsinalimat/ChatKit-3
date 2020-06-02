@@ -71,6 +71,8 @@ class quickEmojiView: UIView {
     
     @objc func tappedImage(_ sender: UITapGestureRecognizer) {
         guard let tag = sender.view?.tag else { return }
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
         delegate?.EmojiTapped(index: tag)
     }
     

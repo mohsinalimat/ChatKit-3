@@ -55,6 +55,7 @@
 		64E444142452612300DA8076 /* TouchDrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E444132452612300DA8076 /* TouchDrawView.swift */; };
 		64E444162452612F00DA8076 /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E444152452612F00DA8076 /* Stroke.swift */; };
 		64E6047724845070000FBBE8 /* quickEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E6047624845070000FBBE8 /* quickEmojiView.swift */; };
+		64E6047A248575D9000FBBE8 /* recordAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E60479248575D9000FBBE8 /* recordAudio.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,6 +110,7 @@
 		64E444132452612300DA8076 /* TouchDrawView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchDrawView.swift; sourceTree = "<group>"; };
 		64E444152452612F00DA8076 /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
 		64E6047624845070000FBBE8 /* quickEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = quickEmojiView.swift; sourceTree = "<group>"; };
+		64E60479248575D9000FBBE8 /* recordAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = recordAudio.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,8 +171,9 @@
 				644B2F23244982E7006D2FA5 /* Utils */,
 				644B2F24244982F1006D2FA5 /* Extensions */,
 				64492B3B245911BB0001CA75 /* Sticker */,
-				644B2EF824497FFE006D2FA5 /* SceneDelegate.swift */,
+				64E60478248575B8000FBBE8 /* Audio */,
 				644B2EF624497FFE006D2FA5 /* AppDelegate.swift */,
+				644B2EF824497FFE006D2FA5 /* SceneDelegate.swift */,
 				644B2EFA24497FFE006D2FA5 /* ViewController.swift */,
 				644B2EFF24497FFE006D2FA5 /* Assets.xcassets */,
 				644B2F0124497FFE006D2FA5 /* LaunchScreen.storyboard */,
@@ -273,6 +276,14 @@
 				64E6047624845070000FBBE8 /* quickEmojiView.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		64E60478248575B8000FBBE8 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				64E60479248575D9000FBBE8 /* recordAudio.swift */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -379,6 +390,7 @@
 				64674E6F244D026700E77AFB /* ContextLabel.swift in Sources */,
 				644B2EF724497FFE006D2FA5 /* AppDelegate.swift in Sources */,
 				644B2F2024498115006D2FA5 /* MessageMapCell.swift in Sources */,
+				64E6047A248575D9000FBBE8 /* recordAudio.swift in Sources */,
 				644B2EF924497FFE006D2FA5 /* SceneDelegate.swift in Sources */,
 				64492B44245912360001CA75 /* StickerCell.swift in Sources */,
 				644B2F2224498129006D2FA5 /* MessageAudioCell.swift in Sources */,

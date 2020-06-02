@@ -146,10 +146,18 @@ class MessagesUI : UIView {
         return view
     }()
     
+    private var recordAudioView: recordAudio = {
+        let view = recordAudio()
+        view.backgroundColor = .systemGray6
+        return view
+    }()
+    
+    
     
  
-    var buttonViewLeftConstraint = NSLayoutConstraint()
+     var buttonViewLeftConstraint = NSLayoutConstraint()
      var textMore = true
+    
     // variable
     private var imagePicker: ImagePicker!
     var parentViewController: UIViewController? = nil
@@ -163,6 +171,7 @@ class MessagesUI : UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+    
         setupUIElements()
         addObserver()
         
@@ -207,6 +216,8 @@ class MessagesUI : UIView {
     // MARK: - SELECTIONS
     /// Send Text Button
     @objc private func didPressSendTextButton(_ sender: Any?) {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
         if sendButton.tag == 0 {
             quickEmoji()
         } else if sendButton.tag == 1 {
@@ -245,7 +256,7 @@ class MessagesUI : UIView {
         UIView.animate(withDuration: 0.2,animations: {
         self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
-        self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.5, y: 0.5)
+        self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.1, y: 0.1)
         },completion: { _ in
             UIView.animate(withDuration: 0.2) {
                 self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.0, y: 0.0)
@@ -312,7 +323,14 @@ class MessagesUI : UIView {
     @objc private func didPressSendEmojiButton(_ sender: Any?) {}
     
     /// Send audio Button
-    @objc private func didPressSendAudioButton(_ sender: Any?) {}
+    @objc private func didPressSendAudioButton(_ sender: Any?) {
+        let keyboardHeight = KeyboardService.keyboardHeight()
+        self.addSubview(recordAudioView)
+        self.recordAudioView.anchor(top: inputToolbar.bottomAnchor, left: leftAnchor,bottom: self.bottomAnchor,right: rightAnchor,height: keyboardHeight)
+        self.endEditing(true)
+        self.tableView.scrollToBottom(animated: false)
+        
+    }
     
     /// Send More Button
     @objc private func didPressSendMoreButton(_ sender: Any?) {}
@@ -344,6 +362,7 @@ extension MessagesUI {
             ,paddingBottom: 5,width: 108,height: 25)
         buttonViewLeftConstraint.isActive = true
         
+
     }
     
     
@@ -387,6 +406,7 @@ extension MessagesUI {
     // keyboard Will ChangeFrame ( hide / show )
     @objc open dynamic func keyboardWillShow(_ notification: Notification) {
            tableView.scrollToBottom(animated: false)
+           self.recordAudioView.removeFromSuperview()
        }
 
 }
@@ -706,7 +726,7 @@ extension MessagesUI: quickEmojiDelegate {
          UIView.animate(withDuration: 0.2,animations: {
          self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
          self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
-         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.5, y: 0.5)
+         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.1, y: 0.1)
          },completion: { _ in
              UIView.animate(withDuration: 0.2) {
                  self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.0, y: 0.0)
