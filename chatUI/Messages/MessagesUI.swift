@@ -155,8 +155,10 @@ class MessagesUI : UIView {
     
     
  
-     var buttonViewLeftConstraint = NSLayoutConstraint()
-     var textMore = true
+
+   private var buttonViewLeftConstraint = NSLayoutConstraint()
+   private var textMore = true
+   private var isKeybordShowing = false
     
     // variable
     private var imagePicker: ImagePicker!
@@ -298,7 +300,7 @@ class MessagesUI : UIView {
              }
          }
 
-         // rest textview
+         /// rest textview
          buttonViewLeftConstraint.constant = 10
          messageTextView.text = nil
          sendButton.tag = 0
@@ -324,12 +326,50 @@ class MessagesUI : UIView {
     
     /// Send audio Button
     @objc private func didPressSendAudioButton(_ sender: Any?) {
-        let keyboardHeight = KeyboardService.keyboardHeight()
-        self.addSubview(recordAudioView)
-        self.recordAudioView.anchor(top: inputToolbar.bottomAnchor, left: leftAnchor,bottom: self.bottomAnchor,right: rightAnchor,height: keyboardHeight)
-        self.endEditing(true)
-        self.tableView.scrollToBottom(animated: false)
+        self.sendButton.currentBackgroundImage?.withTintColor(.systemGray6)
+        self.sendButton.isEnabled = false
+        self.emojiButton.currentBackgroundImage?.withTintColor(.systemGray6)
+        self.emojiButton.isEnabled = false
+        self.mediaButton.currentBackgroundImage?.withTintColor(.systemGray6)
+        self.mediaButton.isEnabled = false
+        self.moreButton.currentBackgroundImage?.withTintColor(.systemGray6)
+        self.moreButton.isEnabled = false
         
+         let keyboardHeight = KeyboardService.keyboardHeight()
+        self.addSubview(recordAudioView)
+        let RAViewHeightConstraint = self.recordAudioView.heightAnchor.constraint(equalToConstant: keyboardHeight)
+        self.recordAudioView.anchor(top: inputToolbar.bottomAnchor, left: leftAnchor,bottom: self.bottomAnchor,right: rightAnchor)
+         RAViewHeightConstraint.isActive = false
+        
+       if isKeybordShowing {
+            self.endEditing(true)
+            self.tableView.scrollToBottom(animated: false)
+            RAViewHeightConstraint.isActive = true
+        } else {
+            self.tableView.scrollToBottom(animated: false)
+            RAViewHeightConstraint.isActive = true
+            UIView.animate(withDuration: 0.1,animations: {
+                 RAViewHeightConstraint.isActive = true
+            })
+        
+          self.layoutIfNeeded()
+        }
+
+        
+    }
+    
+    
+    private func restButton() {
+        self.sendButton.currentBackgroundImage?.withTintColor(.mainBlue)
+        self.sendButton.isEnabled = true
+        self.emojiButton.currentBackgroundImage?.withTintColor(.mainBlue)
+        self.emojiButton.isEnabled = true
+        self.mediaButton.currentBackgroundImage?.withTintColor(.mainBlue)
+        self.mediaButton.isEnabled = true
+        self.moreButton.currentBackgroundImage?.withTintColor(.mainBlue)
+        self.moreButton.isEnabled = true
+        self.audioButton.currentBackgroundImage?.withTintColor(.mainBlue)
+        self.audioButton.isEnabled = true
     }
     
     /// Send More Button
@@ -383,6 +423,8 @@ extension MessagesUI {
         mediaButton.centerY(inView: buttonView,leftAnchor: moreButton.rightAnchor,paddingLeft: 15)
         emojiButton.centerY(inView: buttonView,leftAnchor: mediaButton.rightAnchor,paddingLeft: 15)
 
+
+    
        
         
     }
@@ -401,14 +443,25 @@ extension MessagesUI {
         
         /// keyboard will Show
          NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        /// keyboard will Show
+         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // keyboard Will ChangeFrame ( hide / show )
+    // keyboard Will show
     @objc open dynamic func keyboardWillShow(_ notification: Notification) {
-           tableView.scrollToBottom(animated: false)
+           self.restButton()
+           self.isKeybordShowing = true
+           self.tableView.scrollToBottom(animated: false)
            self.recordAudioView.removeFromSuperview()
        }
 
+    // keyboard Will hide
+    @objc open dynamic func keyboardWillHide(_ notification: Notification) {
+         self.isKeybordShowing = false
+       }
+    
+    
 }
 
 extension MessagesUI: ImagePickerDelegate {
