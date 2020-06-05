@@ -36,6 +36,8 @@ class MessagesUI : UIView {
         
         
         Messages(image: UIImage(named: "image1")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: true),
+        Messages(audio: URL(string: "filePath.com")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: false),
+        Messages(audio: URL(string: "filePath.com")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: true)
         
         
         
@@ -59,7 +61,9 @@ class MessagesUI : UIView {
         tbl.register(MessageImageCell.self, forCellReuseIdentifier: MessageImageCell.reuseIdentifier)
         tbl.register(MessageCaptionCell.self, forCellReuseIdentifier: MessageCaptionCell.reuseIdentifier)
         tbl.register(MessageEmojiCell.self, forCellReuseIdentifier: MessageEmojiCell.reuseIdentifier)
+        tbl.register(MessageAudioCell.self, forCellReuseIdentifier: MessageAudioCell.reuseIdentifier)
         
+    
     
         return tbl
     }()

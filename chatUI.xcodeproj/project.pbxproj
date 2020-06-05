@@ -31,6 +31,7 @@
 		644B2F2624498396006D2FA5 /* GrowingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F2524498396006D2FA5 /* GrowingTextView.swift */; };
 		644B2F28244983CA006D2FA5 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */; };
 		644B2F2A2449841D006D2FA5 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F292449841D006D2FA5 /* UIColor+Extension.swift */; };
+		64615C432488252F00B09519 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C422488252F00B09519 /* AudioRecorder.swift */; };
 		64674E45244AD7D700E77AFB /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64674E44244AD7D700E77AFB /* Date+Extension.swift */; };
 		64674E47244AD8DA00E77AFB /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64674E46244AD8DA00E77AFB /* Array+Extension.swift */; };
 		64674E49244AD9DE00E77AFB /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64674E48244AD9DE00E77AFB /* DateHeader.swift */; };
@@ -85,6 +86,7 @@
 		644B2F2524498396006D2FA5 /* GrowingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
 		644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		644B2F292449841D006D2FA5 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		64615C422488252F00B09519 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		64674E44244AD7D700E77AFB /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		64674E46244AD8DA00E77AFB /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		64674E48244AD9DE00E77AFB /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				64E60479248575D9000FBBE8 /* recordAudio.swift */,
+				64615C422488252F00B09519 /* AudioRecorder.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 				644B2F0F24498033006D2FA5 /* MessagesView.swift in Sources */,
 				64E443F82450C76300DA8076 /* Configs.swift in Sources */,
 				642502ED244E14F8002E1785 /* Messages.swift in Sources */,
+				64615C432488252F00B09519 /* AudioRecorder.swift in Sources */,
 				644B2F1C244980E3006D2FA5 /* MessageImageCell.swift in Sources */,
 				64674E4D244CC16400E77AFB /* UILabel+Extension .swift in Sources */,
 				64E443F62450BD8400DA8076 /* MessageStatusView.swift in Sources */,

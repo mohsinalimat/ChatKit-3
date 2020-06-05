@@ -14,7 +14,7 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
     
     private let timeLab: UILabel = {
         let lab = UILabel()
-        lab.text = "00.00"
+        lab.text = "00:00"
         lab.textColor = .systemGray2
         lab.font = UIFont.systemFont(ofSize: 55, weight: .black)
         return lab
@@ -64,27 +64,15 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
     private var audioRecorder: AVAudioRecorder!
     private var meterTimer: Timer! = nil
     
+    private var state: AudioRecorderState = .Ready
+    private var recorder: AudioRecorder = AudioRecorder(withFileName: "recording.m4a")
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUIElements()
         
-        recordingSession = AVAudioSession.sharedInstance()
+        recorder.delegate = self
 
-        do {
-            try recordingSession.setCategory(.playAndRecord, mode: .default)
-            try recordingSession.setActive(true)
-            recordingSession.requestRecordPermission() { [unowned self] allowed in
-                DispatchQueue.main.async {
-                    if allowed {
-                     //   self.loadRecordingUI()
-                    } else {
-                        // failed to record!
-                    }
-                }
-            }
-        } catch {
-            // failed to record!
-        }
         
     }
     
@@ -120,22 +108,24 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
             UIView.animate(withDuration: 0.3) {
                 self.layoutIfNeeded()
             }
-            startRecording()
+            recorder.doRecord()
         } else {
-            finishRecording(success: true)
+            recorder.doStopRecording()
+            recorder.doPlay()
+            
         }
    
     }
     
     /// cancel
     @objc private func didPressCancel(_ sender: Any?) {
-        audioRecorder.stop()
+        
         self.recordButton.tag = 0
         self.recordButton.setTitle("Record", for: .normal)
         self.recordButton.backgroundColor = .lightRed
         self.sendWidth.constant = selectedWidth
         self.cancelWidth.constant = 0
-        self.timeLab.text = "0.00"
+        self.timeLab.text = "00:00"
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
         }
@@ -147,59 +137,33 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-    
-    func startRecording() {
-        let audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+}
 
-        let settings = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 12000,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-        ]
+extension recordAudio: AudioRecorderDelegate {
+    func audioRecorder(_ recorder: AudioRecorder, withStates state: AudioRecorderState) {
+        switch state {
+        case .error(let e): debugPrint(e)
+        case .Failed(let s): debugPrint(s)
 
-        do {
-            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
-            audioRecorder.delegate = self
-            audioRecorder.record()
-            meterTimer = Timer.scheduledTimer(timeInterval: 0.01, target:self, selector:#selector(self.updateAudioMeter(timer:)), userInfo:nil, repeats:true)
-
-        } catch {
-            finishRecording(success: false)
-        }
-    }
-    
-    func finishRecording(success: Bool) {
-        audioRecorder.stop()
-        if success {
-          
-        } else {
-           
+        case .Finish:
+            print(recorder.fileUrl())
+            print("Finish")
          
+        case .Recording:
+             print("Recording")
+        case .Pause:
+            print("Pause")
+           
+        case .Play:
+            print("Play")
+           
+        case .Ready:
+            print("Ready")
         }
+        debugPrint(state)
     }
-    
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if !flag {
-            finishRecording(success: false)
-        }
-    }
-    
-    
-    
-    @objc func updateAudioMeter(timer: Timer)
-    {
-        if audioRecorder.isRecording
-        {
-            let min = Int(audioRecorder.currentTime / 60)
-            let sec = Int(audioRecorder.currentTime.truncatingRemainder(dividingBy: 60))
-            let totalTimeString = String(format: "%02d:%02d", min, sec)
-            timeLab.text = totalTimeString
-            audioRecorder.updateMeters()
-        }
+
+    func audioRecorder(_ recorder: AudioRecorder, currentTime timeInterval: TimeInterval, formattedString: String) {
+        self.timeLab.text = formattedString
     }
 }

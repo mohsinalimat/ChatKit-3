@@ -38,7 +38,7 @@ struct Messages {
     var stickerName: String?
     var stickerType: StickerType?
     var image: UIImage?
-    var audio: String?
+    var audio: URL?
     let createdAt: Date!
     var isIncoming: Bool = true
     
@@ -110,12 +110,10 @@ struct Messages {
     
     
     /// Initialize audio message
-    init(audio: String, createdAt: Date, isIncoming: Bool) {
+    init(audio: URL, createdAt: Date, isIncoming: Bool) {
         self.init(type: .audio, createdAt: createdAt, isIncoming: isIncoming)
         self.audio = audio
     }
-    
-    
     
     
     func cellIdentifer() -> String {
