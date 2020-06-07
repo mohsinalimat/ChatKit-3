@@ -776,6 +776,8 @@ extension MessagesUI: quickEmojiDelegate, recordDelegate {
                  self.tableView.reloadRows(at: [indexPath], with: .none)
              }
          }
+        
+        self.messageTextView.becomeFirstResponder()
     }
     
     

@@ -118,6 +118,15 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
             }
             recorder.doRecord()
         } else {
+            self.recordButton.tag = 0
+            self.recordButton.setTitle("Record", for: .normal)
+            self.recordButton.backgroundColor = .lightRed
+            self.sendWidth.constant = selectedWidth
+            self.cancelWidth.constant = 0
+            self.timeLab.text = "00:00"
+            UIView.animate(withDuration: 0.3) {
+                self.layoutIfNeeded()
+            }
             recorder.doStopRecording()
             delegate?.AudioFile(recorder.fileUrl())
             
@@ -127,7 +136,6 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
     
     /// cancel
     @objc private func didPressCancel(_ sender: Any?) {
-        
         self.recordButton.tag = 0
         self.recordButton.setTitle("Record", for: .normal)
         self.recordButton.backgroundColor = .lightRed
