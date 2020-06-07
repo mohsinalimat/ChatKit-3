@@ -10,7 +10,15 @@ import Foundation
 import UIKit
 import AVFoundation
 
+protocol recordDelegate {
+    func AudioFile(_ url:URL)
+}
+
 class recordAudio: UIView, AVAudioRecorderDelegate {
+    
+    
+    var delegate: recordDelegate?
+    
     
     private let timeLab: UILabel = {
         let lab = UILabel()
@@ -111,7 +119,7 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
             recorder.doRecord()
         } else {
             recorder.doStopRecording()
-            recorder.doPlay()
+            delegate?.AudioFile(recorder.fileUrl())
             
         }
    

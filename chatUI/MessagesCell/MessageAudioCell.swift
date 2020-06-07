@@ -23,10 +23,11 @@ class MessageAudioCell: MessageCell {
     }()
     
     private let playBtn : UIButton = {
-        let btn = UIButton()
-        btn.setImage(UIImage(named: "play_icon")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        btn.addTarget(self, action: #selector(play_pause), for: .touchUpInside)
-        return btn
+        let button = UIButton()
+        button.setImage(UIImage(named: "play_icon")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.addTarget(self, action: #selector(play_pause), for: UIControl.Event.touchUpInside)
+        button.tag = 0
+        return button
     }()
     
    private var time : UILabel = {
@@ -46,6 +47,9 @@ class MessageAudioCell: MessageCell {
           return label
       }()
     
+    
+    private var audioPlayer = AVAudioPlayer()
+    private var url: URL?
     
     override func prepareForReuse() {
          super.prepareForReuse()
@@ -73,7 +77,15 @@ class MessageAudioCell: MessageCell {
     override func bind(withMessage message: Messages) {
          let date = dateFormatTime(date: message.createdAt)
          self.messageStatusView.dateLab.text = date
+         self.url = message.audio
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: self.url!)
+            audioPlayer.play()
+        } catch let error {
+            print("\(error)")
+        }
       
+    
         
         tranformUI(message.isIncoming)
     }
@@ -107,11 +119,13 @@ class MessageAudioCell: MessageCell {
     
     
     @objc func play_pause() {
-        
+        audioPlayer.play()
+         print("ddsdd")
+   
     }
     
     @objc func sliderPlayer() {
-
+        print("ddsdd")
     }
     
 }

@@ -36,8 +36,7 @@ class MessagesUI : UIView {
         
         
         Messages(image: UIImage(named: "image1")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: true),
-        Messages(audio: URL(string: "filePath.com")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: false),
-        Messages(audio: URL(string: "filePath.com")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: true)
+ 
         
         
         
@@ -341,6 +340,7 @@ class MessagesUI : UIView {
         
          let keyboardHeight = KeyboardService.keyboardHeight()
         self.addSubview(recordAudioView)
+        self.recordAudioView.delegate = self
         let RAViewHeightConstraint = self.recordAudioView.heightAnchor.constraint(equalToConstant: keyboardHeight)
         self.recordAudioView.anchor(top: inputToolbar.bottomAnchor, left: leftAnchor,bottom: self.bottomAnchor,right: rightAnchor)
          RAViewHeightConstraint.isActive = false
@@ -746,7 +746,40 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
 }
 
 
-extension MessagesUI: quickEmojiDelegate {
+extension MessagesUI: quickEmojiDelegate, recordDelegate {
+    func AudioFile(_ url: URL) {
+         let randomBool = Bool.random()
+         let now = Date()
+         let NewMessages = Messages(audio: url, createdAt: now, isIncoming: randomBool)
+        
+         
+         let diff = Calendar.current.dateComponents([.day], from: now, to: ( messages.last?.last?.createdAt)!)
+          if diff.day == 0 {
+             MessagesViewModel.shared.object[self.messages.count - 1].append(NewMessages)
+               self.messages[self.messages.count - 1].append(NewMessages)
+               self.tableView.reloadData()
+               DispatchQueue.main.async {
+                   let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
+                   let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
+                   self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+                   self.tableView.reloadRows(at: [indexPath], with: .none)
+               }
+             
+         } else {
+             MessagesViewModel.shared.object.insert([NewMessages], at: self.messages.count)
+             self.messages.insert([NewMessages], at: self.messages.count)
+             self.tableView.reloadData()
+             DispatchQueue.main.async {
+                 let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
+                 let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
+                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+                 self.tableView.reloadRows(at: [indexPath], with: .none)
+             }
+         }
+    }
+    
+    
+    
     func EmojiTapped(index: Int) {
          let randomBool = Bool.random()
          let now = Date()
