@@ -28,7 +28,7 @@ enum StickerType: Int, Decodable {
 
 /// Messages Model
 
-struct Messages {
+public struct Messages {
     
  
     let type: MessageType
