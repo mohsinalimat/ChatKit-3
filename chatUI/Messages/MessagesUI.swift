@@ -8,42 +8,22 @@
 
 import UIKit
 
+
+
+@objc protocol inputDelegate {
+    @objc optional func sendText(text: String)
+    @objc optional func SendImage(image: UIImage, caption: String?)
+    @objc optional func SendAudio(url: URL)
+    @objc optional func SendEmoji(emoji: String)
+}
+
 class MessagesUI : UIView {
  
-    var cellIdentifier = "MessagesCellId"
+  /// The data source for the messenger
+  public weak var dataSource: DataSource?
+  public weak var inputDelegate: inputDelegate?
     
-    var messages = [[Messages]]()
-    
-    // test
-    let image1 = UIImage(named: "image1")
-    let image2 = UIImage(named: "image2")
-    let image3 = UIImage(named: "me")
-    
-    // test array
-    var messagesFromServer = [
-        Messages(text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.", createdAt: Date.dateString(customString: "1/05/2019"), isIncoming: true),
-        Messages(text: "Message with email: developer.faris@gmail.com", createdAt: Date.dateString(customString: "1/05/2019"), isIncoming: true),
-        Messages(text: "Hi", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: false),
-        Messages(text: "Message with Phone Number: 4125388166", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: false),
-        Messages(text: "Message with url: google.com", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: true),
-        Messages(text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: false),
-        Messages(text: "Lorem Ipsum is simply dummy text of the printing,", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: false),
-         Messages(text: "Lorem Ipsum is simply dummy text of the printing,", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
-          Messages(text: "Lorem Ipsum is simply dummy text of the printing,", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
-        Messages(text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
-        
-        Messages(image: UIImage(named: "me")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: true),
-        
-        
-        Messages(image: UIImage(named: "image1")!, createdAt: Date.dateString(customString: "05/25/2019"), isIncoming: true),
- 
-        
-        
-        
-    ]
-    
-    
-  private lazy var tableView : UITableView = {
+   lazy var tableView : UITableView = {
         let tbl = UITableView(frame: .zero, style: .grouped)
         tbl.backgroundColor = .clear
         tbl.separatorStyle = .none
@@ -61,9 +41,6 @@ class MessagesUI : UIView {
         tbl.register(MessageCaptionCell.self, forCellReuseIdentifier: MessageCaptionCell.reuseIdentifier)
         tbl.register(MessageEmojiCell.self, forCellReuseIdentifier: MessageEmojiCell.reuseIdentifier)
         tbl.register(MessageAudioCell.self, forCellReuseIdentifier: MessageAudioCell.reuseIdentifier)
-        
-    
-    
         return tbl
     }()
     
@@ -155,13 +132,12 @@ class MessagesUI : UIView {
         return view
     }()
     
-    
-    
- 
 
    private var buttonViewLeftConstraint = NSLayoutConstraint()
    private var textMore = true
    private var isKeybordShowing = false
+   private var isAudioViewShowing = false
+   private var keyboardHeight = CGFloat()
     
     // variable
     private var imagePicker: ImagePicker!
@@ -174,23 +150,22 @@ class MessagesUI : UIView {
            }
        }
     
+    
+    var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.backgroundColor = .clear
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.isLayoutMarginsRelativeArrangement = true
+        return stackView
+    }()
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-    
         setupUIElements()
         addObserver()
-        
-        
-        MessagesViewModel.shared.GroupedMessages(Messages: messagesFromServer) { (messages) in
-            self.messages = messages
-            self.tableView.reloadData()
-            DispatchQueue.main.async {
-                let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-            }
-        }
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -199,6 +174,8 @@ class MessagesUI : UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+        keyboardHeight = KeyboardService.keyboardHeight()
+        print(keyboardHeight)
         setupConstraints()
         self.imagePicker = ImagePicker(presentationController: parentViewController!, delegate: self)
         
@@ -274,34 +251,8 @@ class MessagesUI : UIView {
     
     /// send text message
     private func sendText() {
-         let randomBool = Bool.random()
-         let now = Date()
-         let NewMessages = Messages(text: "\(messageTextView.text!)", createdAt: now, isIncoming: randomBool)
-        
-         
-         let diff = Calendar.current.dateComponents([.day], from: now, to: ( messages.last?.last?.createdAt)!)
-          if diff.day == 0 {
-             MessagesViewModel.shared.object[self.messages.count - 1].append(NewMessages)
-               self.messages[self.messages.count - 1].append(NewMessages)
-               self.tableView.reloadData()
-               DispatchQueue.main.async {
-                   let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                   let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                   self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                   self.tableView.reloadRows(at: [indexPath], with: .none)
-               }
-             
-         } else {
-             MessagesViewModel.shared.object.insert([NewMessages], at: self.messages.count)
-             self.messages.insert([NewMessages], at: self.messages.count)
-             self.tableView.reloadData()
-             DispatchQueue.main.async {
-                 let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                 let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                 self.tableView.reloadRows(at: [indexPath], with: .none)
-             }
-         }
+         self.textMore = true
+         self.inputDelegate?.sendText?(text: messageTextView.text!)
 
          /// rest textview
          buttonViewLeftConstraint.constant = 10
@@ -321,6 +272,7 @@ class MessagesUI : UIView {
     
     /// Send file Button
     @objc private func didPressSendFileButton(_ sender: Any?) {
+        self.endEditing(true)
         self.imagePicker.present()
     }
        
@@ -337,26 +289,22 @@ class MessagesUI : UIView {
         self.mediaButton.isEnabled = false
         self.moreButton.currentBackgroundImage?.withTintColor(.systemGray6)
         self.moreButton.isEnabled = false
+
         
-         let keyboardHeight = KeyboardService.keyboardHeight()
-        self.addSubview(recordAudioView)
-        self.recordAudioView.delegate = self
-        let RAViewHeightConstraint = self.recordAudioView.heightAnchor.constraint(equalToConstant: keyboardHeight)
-        self.recordAudioView.anchor(top: inputToolbar.bottomAnchor, left: leftAnchor,bottom: self.bottomAnchor,right: rightAnchor)
-         RAViewHeightConstraint.isActive = false
         
        if isKeybordShowing {
+            self.recordAudioView.isHidden = false
             self.endEditing(true)
-            self.tableView.scrollToBottom(animated: false)
-            RAViewHeightConstraint.isActive = true
+            self.tableView.scrollToBottomRow(animated: false)
+            self.layoutIfNeeded()
+            
         } else {
-            self.tableView.scrollToBottom(animated: false)
-            RAViewHeightConstraint.isActive = true
-            UIView.animate(withDuration: 0.1,animations: {
-                 RAViewHeightConstraint.isActive = true
-            })
-        
-          self.layoutIfNeeded()
+            self.recordAudioView.isHidden = false
+            self.tableView.scrollToBottomRow(animated: false)
+            UIView.animate(withDuration: 0.3) {
+             self.layoutIfNeeded()
+          }
+          
         }
 
         
@@ -388,7 +336,13 @@ extension MessagesUI {
         addSubview(tableView)
         tableView.contentInset = .init(top: 0, left: 0, bottom: -20, right: 0)
         
-        addSubview(inputToolbar)
+        addSubview(stackView)
+        stackView.addArrangedSubview(inputToolbar)
+        stackView.addArrangedSubview(recordAudioView)
+        recordAudioView.delegate = self
+    
+
+        
         inputToolbar.addSubview(messageTextView)
         inputToolbar.addSubview(sendButton)
         inputToolbar.addSubview(buttonView)
@@ -398,39 +352,37 @@ extension MessagesUI {
         buttonView.addSubview(mediaButton)
         buttonView.addSubview(emojiButton)
   
-         // add constraints to inputToolbar
-        addLayoutGuide(keyboardLayoutGuide)
-        inputToolbar.anchor(top: tableView.bottomAnchor,left: leftAnchor,bottom: keyboardLayoutGuide.topAnchor,right: rightAnchor)
-        buttonViewLeftConstraint = buttonView.leftAnchor.constraint(equalTo: inputToolbar.leftAnchor,constant: 10)
-        buttonView.anchor(bottom: messageTextView.bottomAnchor
-            ,paddingBottom: 5,width: 108,height: 25)
-        buttonViewLeftConstraint.isActive = true
-        
-
+ 
     }
     
     
     private func setupConstraints() {
         // add constraints to subviews
 
+        let height = self.safeAreaInsets.bottom
+        recordAudioView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor,height:keyboardHeight - height)
+        inputToolbar.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
+        recordAudioView.isHidden = true
+        addLayoutGuide(keyboardLayoutGuide)
+    
+        stackView.anchor(top: tableView.bottomAnchor,left: leftAnchor,bottom: keyboardLayoutGuide.topAnchor,right: rightAnchor)
+    
+        buttonViewLeftConstraint = buttonView.leftAnchor.constraint(equalTo: inputToolbar.leftAnchor,constant: 10)
+        buttonView.anchor(bottom: messageTextView.bottomAnchor
+               ,paddingBottom: 5,width: 108,height: 25)
+        buttonViewLeftConstraint.isActive = true
+        
+        
         tableView.anchor(top: safeAreaLayoutGuide.topAnchor,left: leftAnchor,right: rightAnchor)
     
-        
         sendButton.anchor(bottom: messageTextView.bottomAnchor, right: inputToolbar.rightAnchor,paddingBottom: 5, paddingRight: 10)
         audioButton.anchor(bottom: messageTextView.bottomAnchor, right: messageTextView.rightAnchor,paddingBottom: 5, paddingRight: 5)
         
-        
         messageTextView.anchor(top: inputToolbar.topAnchor,left: buttonView.rightAnchor,bottom: inputToolbar.bottomAnchor,right: sendButton.leftAnchor, paddingTop: 5,paddingLeft: 5,paddingBottom: 5,paddingRight: 5)
-        
 
         moreButton.centerY(inView: buttonView,leftAnchor: buttonView.leftAnchor)
         mediaButton.centerY(inView: buttonView,leftAnchor: moreButton.rightAnchor,paddingLeft: 15)
         emojiButton.centerY(inView: buttonView,leftAnchor: mediaButton.rightAnchor,paddingLeft: 15)
-
-
-    
-       
-        
     }
     
     // register observers
@@ -456,8 +408,9 @@ extension MessagesUI {
     @objc open dynamic func keyboardWillShow(_ notification: Notification) {
            self.restButton()
            self.isKeybordShowing = true
-           self.tableView.scrollToBottom(animated: false)
-           self.recordAudioView.removeFromSuperview()
+           self.recordAudioView.isHidden = true
+           self.tableView.scrollToBottomRow(animated: false)
+        
        }
 
     // keyboard Will hide
@@ -468,57 +421,21 @@ extension MessagesUI {
     
 }
 
-extension MessagesUI: ImagePickerDelegate {
-    
-    func didSelect(image: UIImage?, caption: String?) {
-        guard let image = image else { return }
-        let randomBool = Bool.random()
-        let now = Date()
-        var NewMessages: Messages!
-        if caption == nil {
-             NewMessages = Messages(image: image, createdAt: now, isIncoming: randomBool)
-        } else {
-             NewMessages = Messages(image: image, text: caption, createdAt: now, isIncoming: randomBool)
-        }
-        
-        let diff = Calendar.current.dateComponents([.day], from: now, to: ( messages.last?.last?.createdAt)!)
-          if diff.day == 0 {
-             MessagesViewModel.shared.object[self.messages.count - 1].append(NewMessages)
-               self.messages[self.messages.count - 1].append(NewMessages)
-               self.tableView.reloadData()
-               DispatchQueue.main.async {
-                   let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                   let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                   self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                   self.tableView.reloadRows(at: [indexPath], with: .none)
-               }
-             
-         } else {
-             MessagesViewModel.shared.object.insert([NewMessages], at: self.messages.count)
-             self.messages.insert([NewMessages], at: self.messages.count)
-             self.tableView.reloadData()
-             DispatchQueue.main.async {
-                 let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                 let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                 self.tableView.reloadRows(at: [indexPath], with: .none)
-             }
-         }
-    }
-}
-
-
 extension MessagesUI: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return messages.count
+        return dataSource?.numberOfSections() ?? 0
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if let firstMessageInSection = messages[section].first {
+        guard let message = dataSource?.headerTitle(for: section) else {
+                   fatalError("Message not defined for \(section)")
+            }
+        
+        if let firstMessageInSection = message.first {
             let date = Date()
             let dateString = MessagesViewModel.shared.chatTime(firstMessageInSection.createdAt, currentDate: date)
             let label = DateHeader()
@@ -537,11 +454,13 @@ extension MessagesUI: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        messages[section].count
+       return dataSource?.numberOfMessages(in: section) ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let chatMessage = messages[indexPath.section][indexPath.row]
+        guard let chatMessage = dataSource?.message(for: indexPath) else {
+                 fatalError("Message not defined for \(indexPath)")
+             }
         let cellIdentifer = chatMessage.cellIdentifer()
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifer, for: indexPath) as! MessageCell
         let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
@@ -566,7 +485,11 @@ extension MessagesUI: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let chatCell = cell as! MessageCell
-        let chatMessage = messages[indexPath.section][indexPath.row]
+        guard let Message = dataSource?.message(for: indexPath) else {
+                 fatalError("Message not defined for \(indexPath)")
+             }
+        
+        let chatMessage = Message
         let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
 
         // Update UI for cell
@@ -625,7 +548,10 @@ extension MessagesUI: UITableViewDelegate {
  
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let item = messages[indexPath.section][indexPath.row]
+        guard let item = dataSource?.message(for: indexPath) else {
+                 fatalError("Message not defined for \(indexPath)")
+            }
+        
         let identifier = ["row": indexPath.row, "section": indexPath.section]
         switch item.type {
         case .text:
@@ -689,7 +615,6 @@ extension MessagesUI: UITableViewDelegate {
 
 extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
     
-    
     // Mark: Keyboard Configure
     // while writing something
     func textViewDidChange(_ textView: UITextView) {
@@ -727,12 +652,13 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
 
              self.layoutIfNeeded()
          }
-            
-            DispatchQueue.main.async {
-                let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-            }
+//
+//            DispatchQueue.main.async {
+//
+//                let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
+//                let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
+//                self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+//            }
      }
     
     
@@ -748,70 +674,16 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
 
 extension MessagesUI: quickEmojiDelegate, recordDelegate {
     func AudioFile(_ url: URL) {
-         let randomBool = Bool.random()
-         let now = Date()
-         let NewMessages = Messages(audio: url, createdAt: now, isIncoming: randomBool)
-        
-         
-         let diff = Calendar.current.dateComponents([.day], from: now, to: ( messages.last?.last?.createdAt)!)
-          if diff.day == 0 {
-             MessagesViewModel.shared.object[self.messages.count - 1].append(NewMessages)
-               self.messages[self.messages.count - 1].append(NewMessages)
-               self.tableView.reloadData()
-               DispatchQueue.main.async {
-                   let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                   let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                   self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                   self.tableView.reloadRows(at: [indexPath], with: .none)
-               }
-             
-         } else {
-             MessagesViewModel.shared.object.insert([NewMessages], at: self.messages.count)
-             self.messages.insert([NewMessages], at: self.messages.count)
-             self.tableView.reloadData()
-             DispatchQueue.main.async {
-                 let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                 let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                 self.tableView.reloadRows(at: [indexPath], with: .none)
-             }
-         }
-        
         self.messageTextView.becomeFirstResponder()
+        self.inputDelegate?.SendAudio?(url: url)
     }
     
     
     
     func EmojiTapped(index: Int) {
-         let randomBool = Bool.random()
-         let now = Date()
-         let NewMessages = Messages(stickerName: quickEmojiV.quickEmojiArray[index], StickerType: .sticker, createdAt: now, isIncoming: randomBool)
         
-         
-         let diff = Calendar.current.dateComponents([.day], from: now, to: ( messages.last?.last?.createdAt)!)
-          if diff.day == 0 {
-             MessagesViewModel.shared.object[self.messages.count - 1].append(NewMessages)
-               self.messages[self.messages.count - 1].append(NewMessages)
-               self.tableView.reloadData()
-               DispatchQueue.main.async {
-                   let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                   let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                   self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                   self.tableView.reloadRows(at: [indexPath], with: .none)
-               }
-             
-         } else {
-             MessagesViewModel.shared.object.insert([NewMessages], at: self.messages.count)
-             self.messages.insert([NewMessages], at: self.messages.count)
-             self.tableView.reloadData()
-             DispatchQueue.main.async {
-                 let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-                 let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                 self.tableView.reloadRows(at: [indexPath], with: .none)
-             }
-         }
-
+        self.inputDelegate?.SendEmoji?(emoji: quickEmojiV.quickEmojiArray[index])
+ 
          // rest view
          sendButton.tag = 0
          let previouTransform =  sendButton.transform
@@ -828,7 +700,13 @@ extension MessagesUI: quickEmojiDelegate, recordDelegate {
          })
          self.layoutIfNeeded()
     }
+
+}
+
+extension MessagesUI: ImagePickerDelegate {
     
-    
-    
+    func didSelect(image: UIImage?, caption: String?) {
+        guard let image = image else { return }
+        self.inputDelegate?.SendImage?(image: image, caption: caption)
+    }
 }

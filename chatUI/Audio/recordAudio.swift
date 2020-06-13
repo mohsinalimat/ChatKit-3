@@ -118,17 +118,15 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
             }
             recorder.doRecord()
         } else {
+            recorder.doStopRecording()
+            delegate?.AudioFile(recorder.fileUrl())
             self.recordButton.tag = 0
             self.recordButton.setTitle("Record", for: .normal)
             self.recordButton.backgroundColor = .lightRed
             self.sendWidth.constant = selectedWidth
             self.cancelWidth.constant = 0
             self.timeLab.text = "00:00"
-            UIView.animate(withDuration: 0.3) {
-                self.layoutIfNeeded()
-            }
-            recorder.doStopRecording()
-            delegate?.AudioFile(recorder.fileUrl())
+     
             
         }
    
@@ -141,6 +139,7 @@ class recordAudio: UIView, AVAudioRecorderDelegate {
         self.recordButton.backgroundColor = .lightRed
         self.sendWidth.constant = selectedWidth
         self.cancelWidth.constant = 0
+        self.recorder.doStopRecording()
         self.timeLab.text = "00:00"
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
@@ -160,19 +159,10 @@ extension recordAudio: AudioRecorderDelegate {
         switch state {
         case .error(let e): debugPrint(e)
         case .Failed(let s): debugPrint(s)
-
         case .Finish:
-            print(recorder.fileUrl())
             print("Finish")
-         
         case .Recording:
              print("Recording")
-        case .Pause:
-            print("Pause")
-           
-        case .Play:
-            print("Play")
-           
         case .Ready:
             print("Ready")
         }

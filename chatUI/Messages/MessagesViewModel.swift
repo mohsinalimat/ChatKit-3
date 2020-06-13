@@ -33,16 +33,16 @@ class MessagesViewModel {
         let message = object[section][index]
         if let beforeItemMessage = object[section].item(before: index),
             let afterItemMessage = object[section].item(after: index) {
-            if beforeItemMessage.isIncoming == message.isIncoming
+            if beforeItemMessage.user.userId == message.user.userId
                 && message.isIncoming == afterItemMessage.isIncoming {
                 return .center
             }
             
-            if beforeItemMessage.isIncoming == message.isIncoming {
+            if beforeItemMessage.user.userId == message.user.userId {
                 return .bottom
             }
             
-            if message.isIncoming == afterItemMessage.isIncoming {
+            if message.user.userId == afterItemMessage.user.userId {
                 return .top
             }
             
@@ -50,14 +50,14 @@ class MessagesViewModel {
         }
         
         if let beforeItemMessage = object[section].item(before: index) {
-            if beforeItemMessage.isIncoming == message.isIncoming {
+            if beforeItemMessage.user.userId == message.user.userId {
                 return .bottom
             }
             return .single
         }
         
         if let afterItemMessage = object[section].item(after: index) {
-            if afterItemMessage.isIncoming == message.isIncoming {
+            if afterItemMessage.user.userId == message.user.userId {
                 return .top
             }
             

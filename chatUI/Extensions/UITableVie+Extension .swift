@@ -51,12 +51,15 @@ extension UITableView {
 extension UITableView {
 
     func scrollToBottom(animated: Bool){
-        DispatchQueue.main.async {
-            let indexPath = IndexPath(
-                row: self.numberOfRows(inSection:  self.numberOfSections - 1) - 1,
-                section: self.numberOfSections - 1)
-            self.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+        if self.numberOfSections != 0 {
+            DispatchQueue.main.async {
+                let indexPath = IndexPath(
+                    row: self.numberOfRows(inSection:  self.numberOfSections - 1) - 1,
+                    section: self.numberOfSections - 1)
+                self.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+            }
         }
+
     }
 
     func scrollToTop() {

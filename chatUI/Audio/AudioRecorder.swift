@@ -10,8 +10,6 @@ import UIKit
 import AVFoundation
 
 enum AudioRecorderState {
-    case Pause
-    case Play
     case Finish
     case Failed(String)
     case Recording
@@ -86,18 +84,7 @@ class AudioRecorder: NSObject {
         return filePath
     }
     
-    func changeFile(withFileName filename: String) {
-        self.filename = filename
-        
-        if audioPlayer != nil {
-            doPause()
-        }
-        
-        if audioRecorder != nil {
-            doStopRecording()
-            setupRecorder()
-        }
-    }
+
     
     private func setupRecorder() {
         
@@ -196,46 +183,6 @@ class AudioRecorder: NSObject {
         }
     }
     
-    func doPlay() {
-        
-        if audioPlayer == nil {
-            self.preparePlay()
-        }
-        
-        if audioRecorder != nil, audioRecorder.isRecording {
-            self.doStopRecording()
-        }
-        
-        if audioPlayer.isPlaying {
-            doPause()
-        }
-        else{
-            if FileManager.default.fileExists(atPath: fileUrl().path) {
-                preparePlay()
-                audioPlayer.play()
-                recorderState = .Play
-            }
-            else {
-                recorderState = .Failed("Audio file is missing.")
-            }
-        }
-    }
-    
-    func doPause() {
-        
-        guard audioPlayer != nil else {
-            return
-        }
-        
-        if audioRecorder != nil, audioRecorder.isRecording {
-            self.doStopRecording()
-        }
-        
-        if (audioPlayer.isPlaying){
-            audioPlayer.pause()
-        }
-        recorderState = .Pause
-    }
 }
 
 extension AudioRecorder: AVAudioRecorderDelegate, AVAudioPlayerDelegate {
