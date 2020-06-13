@@ -8,8 +8,6 @@
 
 import UIKit
 
-
-
 @objc protocol inputDelegate {
     @objc optional func sendText(text: String)
     @objc optional func SendImage(image: UIImage, caption: String?)
@@ -22,6 +20,8 @@ class MessagesUI : UIView {
   /// The data source for the messenger
   public weak var dataSource: DataSource?
   public weak var inputDelegate: inputDelegate?
+    
+    public var currentUser: User!
     
    lazy var tableView : UITableView = {
         let tbl = UITableView(frame: .zero, style: .grouped)
@@ -114,6 +114,13 @@ class MessagesUI : UIView {
      }()
 
     
+     var  lineboardView: UIView = {
+         let lineboardView = UIView()
+         lineboardView.backgroundColor = .systemGray6
+         return lineboardView
+     }()
+    
+   
     private var inputToolbar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
@@ -132,6 +139,18 @@ class MessagesUI : UIView {
         return view
     }()
     
+    
+    
+    private var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.backgroundColor = .clear
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.isLayoutMarginsRelativeArrangement = true
+        return stackView
+    }()
+    
 
    private var buttonViewLeftConstraint = NSLayoutConstraint()
    private var textMore = true
@@ -144,22 +163,12 @@ class MessagesUI : UIView {
     var parentViewController: UIViewController? = nil
     /// The layout guide for the keyboard
     private let keyboardLayoutGuide = KeyboardLayoutGuide()
-    open var keyboardDismissMode: UIScrollView.KeyboardDismissMode = .interactive {
+    private var keyboardDismissMode: UIScrollView.KeyboardDismissMode = .interactive {
            didSet {
                tableView.keyboardDismissMode = keyboardDismissMode
            }
        }
-    
-    
-    var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.backgroundColor = .clear
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.isLayoutMarginsRelativeArrangement = true
-        return stackView
-    }()
+
     
     
     override init(frame: CGRect) {
@@ -182,19 +191,6 @@ class MessagesUI : UIView {
     }
 
     
-    
-    // app Will Resign Active
-    @objc private func WillResignActive() {}
-    
-    
-    // app become Active
-    @objc private func becomeActive() {}
-    
-    // app enter Background
-    @objc private func enterBackground() {}
-    
-    
-    
     // MARK: - SELECTIONS
     /// Send Text Button
     @objc private func didPressSendTextButton(_ sender: Any?) {
@@ -214,7 +210,7 @@ class MessagesUI : UIView {
     private func quickEmoji() {
         self.addSubview(quickEmojiV)
         quickEmojiV.delegate = self
-        self.quickEmojiV.anchor(left: leftAnchor,bottom: inputToolbar.topAnchor,right: rightAnchor)
+        self.quickEmojiV.anchor(left: leftAnchor,bottom: stackView.topAnchor,right: rightAnchor,paddingBottom: 2)
         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0, y: 0)
         self.sendButton.tag = 2
         let previouTransform =  sendButton.transform
@@ -332,17 +328,16 @@ class MessagesUI : UIView {
 extension MessagesUI {
 
     private func setupUIElements() {
-        // arrange subviews
         addSubview(tableView)
         tableView.contentInset = .init(top: 0, left: 0, bottom: -20, right: 0)
         
         addSubview(stackView)
+        stackView.addArrangedSubview(lineboardView)
         stackView.addArrangedSubview(inputToolbar)
         stackView.addArrangedSubview(recordAudioView)
+      
         recordAudioView.delegate = self
     
-
-        
         inputToolbar.addSubview(messageTextView)
         inputToolbar.addSubview(sendButton)
         inputToolbar.addSubview(buttonView)
@@ -351,18 +346,23 @@ extension MessagesUI {
         buttonView.addSubview(moreButton)
         buttonView.addSubview(mediaButton)
         buttonView.addSubview(emojiButton)
-  
- 
+
     }
     
     
     private func setupConstraints() {
-        // add constraints to subviews
 
         let height = self.safeAreaInsets.bottom
         recordAudioView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor,height:keyboardHeight - height)
         inputToolbar.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
         recordAudioView.isHidden = true
+        lineboardView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
+        let lineboardViewHeight = lineboardView.heightAnchor.constraint(equalToConstant: 0)
+        lineboardViewHeight.isActive = true
+        lineboardViewHeight.constant = 1
+     
+ 
+        
         addLayoutGuide(keyboardLayoutGuide)
     
         stackView.anchor(top: tableView.bottomAnchor,left: leftAnchor,bottom: keyboardLayoutGuide.topAnchor,right: rightAnchor)
@@ -387,16 +387,6 @@ extension MessagesUI {
     
     // register observers
     private func addObserver() {
-        /// app Enters Background
-        NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: Notification.Name("appEntersBackground"), object: nil)
-        
-        /// app Becomes Active
-        NotificationCenter.default.addObserver(self, selector: #selector(becomeActive), name: Notification.Name("appBecomesActive"), object: nil)
-        
-        
-        /// app Resign Active
-        NotificationCenter.default.addObserver(self, selector: #selector(WillResignActive), name: Notification.Name("appResignActive"), object: nil)
-        
         /// keyboard will Show
          NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
@@ -466,7 +456,7 @@ extension MessagesUI: UITableViewDataSource {
         let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
 
         // Update UI for cell
-        if chatMessage.isIncoming {
+        if chatMessage.user.userId != currentUser.userId  {
             cell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
         } else {
             cell.updateLayoutForBubbleStyle(positionInBlock)
@@ -493,7 +483,7 @@ extension MessagesUI: UITableViewDataSource {
         let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
 
         // Update UI for cell
-        if chatMessage.isIncoming {
+        if chatMessage.user.userId != currentUser.userId {
             chatCell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
         } else {
             chatCell.updateLayoutForBubbleStyle(positionInBlock)
@@ -504,113 +494,40 @@ extension MessagesUI: UITableViewDataSource {
     
 }
 
-extension MessagesUI: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Get the cell for the index of the model
-        guard let cell = tableView.cellForRow(at: .init(row: indexPath.row, section: indexPath.section)) as? MessageCell else { return }
-        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
-        switch positionInBlock {
-        case .bottom, .single:
-            /// the last row (date show always)
-            cell.messageStatusView.isHidden = false
-        default:
-            if cell.messageStatusView.isHidden {
-                 self.tableView.beginUpdates()
-                 cell.messageStatusView.isHidden = false
-                 self.tableView.endUpdates()
-            } else {
-                 self.tableView.beginUpdates()
-                 cell.messageStatusView.isHidden = true
-                 self.tableView.endUpdates()
-            }
-        }
-        
-        endEditing(true)
+extension MessagesUI: quickEmojiDelegate, recordDelegate {
+    func AudioFile(_ url: URL) {
+        self.messageTextView.becomeFirstResponder()
+        self.inputDelegate?.SendAudio?(url: url)
     }
     
-
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-       // Get the cell for the index of the model
-       guard let cell = tableView.cellForRow(at: .init(row: indexPath.row, section: indexPath.section)) as? MessageCell else { return }
-       let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
-       switch positionInBlock {
-       case .bottom, .single:
-            /// the last row (date show always)
-           cell.messageStatusView.isHidden = false
-       default:
-            self.tableView.beginUpdates()
-            cell.messageStatusView.isHidden = true
-            self.tableView.endUpdates()
-       }
-        
-    }
-    
+    func EmojiTapped(index: Int) {
+        self.inputDelegate?.SendEmoji?(emoji: quickEmojiV.quickEmojiArray[index])
  
-    
-    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let item = dataSource?.message(for: indexPath) else {
-                 fatalError("Message not defined for \(indexPath)")
-            }
-        
-        let identifier = ["row": indexPath.row, "section": indexPath.section]
-        switch item.type {
-        case .text:
-             return UIContextMenuConfiguration(identifier: identifier as NSCopying, previewProvider: nil) { _ -> UIMenu? in
-                return self.TextContextMenu(text: item.text!)
-            }
-        case .file:
-             return UIContextMenuConfiguration(identifier: identifier as NSCopying, previewProvider: nil) { _ -> UIMenu? in
-                return self.ImageContextMenu()
-            }
-        case .sticker:
-            print("sticker")
-        case .map:
-            print("map")
-        case .audio:
-            print("audio")
-        case .caption:
-            return UIContextMenuConfiguration(identifier: identifier as NSCopying, previewProvider: nil) { _ -> UIMenu? in
-                return self.CaptionContextMenu(text: item.text!)
-            }
-        }
-        
-        return nil
+         // rest view
+         sendButton.tag = 0
+         let previouTransform =  sendButton.transform
+         UIView.animate(withDuration: 0.2,animations: {
+         self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
+         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
+         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.1, y: 0.1)
+         },completion: { _ in
+             UIView.animate(withDuration: 0.2) {
+                 self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.0, y: 0.0)
+                 self.quickEmojiV.removeFromSuperview()
+                 self.sendButton.transform  = previouTransform
+                 }
+         })
+         self.layoutIfNeeded()
     }
-    
-    func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 
-         // Ensure we can get the expected identifier
-         guard let identifier = configuration.identifier as? [String : Int] else { return nil }
-
-         print(configuration.identifier)
-         // Get the current index of the identifier
-         let row = identifier["row"]!
-         let section = identifier["section"]!
-
-         // Get the cell for the index of the model
-         guard let cell = tableView.cellForRow(at: .init(row: row, section: section)) as? MessageCell else { return nil }
-
-         // Since our preview has its own shape (a circle) we need to set the preview parameters
-         // backgroundColor to clear, or we'll see a white rect behind it.
-         let parameters = UIPreviewParameters()
-         parameters.backgroundColor = .clear
-
-         // Return a targeted preview using our cell previewView and parameters
-         return UITargetedPreview(view: cell, parameters: parameters)
-     }
-    
-    
-    private func updateCell(row: Int,section: Int){
-        let indexPath = NSIndexPath(row: row, section: section)
-        tableView.beginUpdates()
-        tableView.reloadRows(at: [(indexPath as IndexPath)], with: UITableView.RowAnimation.automatic)
-        tableView.endUpdates()
-    }
-    
 }
 
-
-
+extension MessagesUI: ImagePickerDelegate {
+    func didSelect(image: UIImage?, caption: String?) {
+        guard let image = image else { return }
+        self.inputDelegate?.SendImage?(image: image, caption: caption)
+    }
+}
 
 
 extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
@@ -652,13 +569,7 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
 
              self.layoutIfNeeded()
          }
-//
-//            DispatchQueue.main.async {
-//
-//                let lastRow: Int = self.tableView.numberOfRows(inSection: self.messages.count - 1) - 1
-//                let indexPath = IndexPath(row: lastRow, section: self.messages.count - 1);
-//                self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-//            }
+
      }
     
     
@@ -668,45 +579,5 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
             self.layoutIfNeeded()
             }, completion: { (completed) in
         })
-    }
-}
-
-
-extension MessagesUI: quickEmojiDelegate, recordDelegate {
-    func AudioFile(_ url: URL) {
-        self.messageTextView.becomeFirstResponder()
-        self.inputDelegate?.SendAudio?(url: url)
-    }
-    
-    
-    
-    func EmojiTapped(index: Int) {
-        
-        self.inputDelegate?.SendEmoji?(emoji: quickEmojiV.quickEmojiArray[index])
- 
-         // rest view
-         sendButton.tag = 0
-         let previouTransform =  sendButton.transform
-         UIView.animate(withDuration: 0.2,animations: {
-         self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
-         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
-         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.1, y: 0.1)
-         },completion: { _ in
-             UIView.animate(withDuration: 0.2) {
-                 self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.0, y: 0.0)
-                 self.quickEmojiV.removeFromSuperview()
-                 self.sendButton.transform  = previouTransform
-                 }
-         })
-         self.layoutIfNeeded()
-    }
-
-}
-
-extension MessagesUI: ImagePickerDelegate {
-    
-    func didSelect(image: UIImage?, caption: String?) {
-        guard let image = image else { return }
-        self.inputDelegate?.SendImage?(image: image, caption: caption)
     }
 }

@@ -13,7 +13,7 @@ class MessagesView: UIViewController {
     
     
     let MeFaris = User(userId: "1", fullname: "Faris", avatar: #imageLiteral(resourceName: "audio_icon"))
-    let Tim = User(userId: "1", fullname: "Tim", avatar: #imageLiteral(resourceName: "emoji_3"))
+    let Tim = User(userId: "2", fullname: "Tim", avatar: #imageLiteral(resourceName: "emoji_3"))
     
     let image1 = UIImage(named: "image1")
     let image2 = UIImage(named: "image2")
@@ -46,13 +46,18 @@ class MessagesView: UIViewController {
         ui.dataSource = self
         ui.inputDelegate = self
         view = ui
+        ui.currentUser = MeFaris
         setNavigationBar()
         // test array
          let messagesFromServer = [
+            
             Messages(objectId: "1331", user: MeFaris, image: image1!, text: "text", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: false),
-            Messages(objectId: "1323", user: MeFaris, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: true),
+            
+            Messages(objectId: "1323", user: MeFaris, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: false),
+            
             Messages(objectId: "1323", user: Tim, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: true),
             Messages(objectId: "1323", user: Tim, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
+            
             Messages(objectId: "1323", user: MeFaris, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: false),
          ]
         
