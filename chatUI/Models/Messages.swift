@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-struct User {
+
+public struct User {
     var userId: String
     var fullname: String
     var avatar: UIImage?

@@ -98,7 +98,7 @@ class MessageCell: UITableViewCell {
          }
      }
     
-    /// Update cell position In Block NOT(IsIncoming))
+    /// Update cell position In Block (outgoing)
     func updateLayoutForBubbleStyle(_ positionInBlock: PositionInBlock) {
         switch positionInBlock {
            case .top:

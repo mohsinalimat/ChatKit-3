@@ -33,7 +33,8 @@
 		644B2F2A2449841D006D2FA5 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F292449841D006D2FA5 /* UIColor+Extension.swift */; };
 		64615C432488252F00B09519 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C422488252F00B09519 /* AudioRecorder.swift */; };
 		64615C4C248ED93D00B09519 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4B248ED93D00B09519 /* DataSource.swift */; };
-		64615C5024907EE100B09519 /* MTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4F24907EE100B09519 /* MTableView.swift */; };
+		64615C5024907EE100B09519 /* MessagesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4F24907EE100B09519 /* MessagesTableView.swift */; };
+		64615CCB249576FC00B09519 /* MessegesStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615CCA249576FC00B09519 /* MessegesStyle.swift */; };
 		64674E45244AD7D700E77AFB /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64674E44244AD7D700E77AFB /* Date+Extension.swift */; };
 		64674E47244AD8DA00E77AFB /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64674E46244AD8DA00E77AFB /* Array+Extension.swift */; };
 		64674E49244AD9DE00E77AFB /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64674E48244AD9DE00E77AFB /* DateHeader.swift */; };
@@ -90,7 +91,8 @@
 		644B2F292449841D006D2FA5 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		64615C422488252F00B09519 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		64615C4B248ED93D00B09519 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
-		64615C4F24907EE100B09519 /* MTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTableView.swift; sourceTree = "<group>"; };
+		64615C4F24907EE100B09519 /* MessagesTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableView.swift; sourceTree = "<group>"; };
+		64615CCA249576FC00B09519 /* MessegesStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessegesStyle.swift; sourceTree = "<group>"; };
 		64674E44244AD7D700E77AFB /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		64674E46244AD8DA00E77AFB /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		64674E48244AD9DE00E77AFB /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
@@ -193,11 +195,12 @@
 		644B2F0A24498014006D2FA5 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
+				64615CC9249576DC00B09519 /* Style */,
 				644B2F0C24498033006D2FA5 /* MessagesViewModel.swift */,
 				644B2F0E24498033006D2FA5 /* MessagesUI.swift */,
 				64E443FB24510D4200DA8076 /* MessagesMenus.swift */,
 				64615C4B248ED93D00B09519 /* DataSource.swift */,
-				64615C4F24907EE100B09519 /* MTableView.swift */,
+				64615C4F24907EE100B09519 /* MessagesTableView.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -253,6 +256,14 @@
 				642502EC244E14F8002E1785 /* Messages.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		64615CC9249576DC00B09519 /* Style */ = {
+			isa = PBXGroup;
+			children = (
+				64615CCA249576FC00B09519 /* MessegesStyle.swift */,
+			);
+			path = Style;
 			sourceTree = "<group>";
 		};
 		64BED1D924579A9300C5BC44 /* Crop */ = {
@@ -416,11 +427,12 @@
 				64615C4C248ED93D00B09519 /* DataSource.swift in Sources */,
 				64492B3D245911DB0001CA75 /* StickerViewController.swift in Sources */,
 				64492B422459121E0001CA75 /* EmojiCell.swift in Sources */,
+				64615CCB249576FC00B09519 /* MessegesStyle.swift in Sources */,
 				64E444162452612F00DA8076 /* Stroke.swift in Sources */,
 				64E444092452420700DA8076 /* ImageEditorUI.swift in Sources */,
 				642502EF244E6684002E1785 /* MessageCaptionCell.swift in Sources */,
 				64E6047724845070000FBBE8 /* quickEmojiView.swift in Sources */,
-				64615C5024907EE100B09519 /* MTableView.swift in Sources */,
+				64615C5024907EE100B09519 /* MessagesTableView.swift in Sources */,
 				64674E45244AD7D700E77AFB /* Date+Extension.swift in Sources */,
 				64E444142452612300DA8076 /* TouchDrawView.swift in Sources */,
 			);

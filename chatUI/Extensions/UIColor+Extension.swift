@@ -25,6 +25,12 @@ extension UIColor {
         }
     }
     
+    static func setColor(_ Dark: UIColor, Light: UIColor) -> UIColor {
+        return UIColor.init { (trait) -> UIColor in
+            return trait.userInterfaceStyle == .dark ? Dark : Light
+        }
+    }
+    
     static let darkBackground = UIColor(red: 0.1098, green: 0.1098, blue: 0.1176, alpha: 1.0)
     
     static let mainBlue = UIColor(red: 0.2627, green: 0.5882, blue: 0.9686, alpha: 1.0)

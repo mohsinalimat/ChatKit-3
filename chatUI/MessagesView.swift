@@ -9,6 +9,7 @@
 import UIKit
 
 
+
 class MessagesView: UIViewController {
     
     
@@ -32,15 +33,15 @@ class MessagesView: UIViewController {
      var messagesData = [[Messages]]()
     
     
+ 
+   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .systemBackground
-    
-        
-       
+
     }
-    
+
     override func loadView() {
         ui.parentViewController = self
         ui.dataSource = self
@@ -66,12 +67,14 @@ class MessagesView: UIViewController {
              self.messagesData = messages
             self.ui.tableView.reloadData()
              DispatchQueue.main.async {
-                let lastRow: Int = self.ui.tableView.numberOfRows(inSection: self.messagesData.count - 1) - 1
-                 let indexPath = IndexPath(row: lastRow, section: self.messagesData.count - 1);
-                self.ui.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+                self.ui.tableView.scrollToBottom(animated: false)
+                self.ui.tableView.layoutIfNeeded()
+                self.ui.tableView.setContentOffset(CGPoint(x: 0, y: self.ui.tableView.contentSize.height - self.ui.tableView.frame.height - 20), animated: false)
+    
              }
          }
-
+        
+        
     }
     
 
@@ -89,10 +92,9 @@ class MessagesView: UIViewController {
                self.messagesData[self.messagesData.count - 1].append(NewMessages)
                self.ui.tableView.reloadData()
                DispatchQueue.main.async {
-                   let lastRow: Int = self.ui.tableView.numberOfRows(inSection: self.messagesData.count - 1) - 1
-                   let indexPath = IndexPath(row: lastRow, section: self.messagesData.count - 1);
-                    self.ui.tableView.scrollToBottomRow(animated: false)
-                    self.ui.tableView.reloadRows(at: [indexPath], with: .none)
+                    self.ui.tableView.scrollToBottom(animated: false)
+                    self.ui.tableView.layoutIfNeeded()
+                    self.ui.tableView.setContentOffset(CGPoint(x: 0, y: self.ui.tableView.contentSize.height - self.ui.tableView.frame.height - 20), animated: false)
                }
              
          } else {
@@ -100,10 +102,9 @@ class MessagesView: UIViewController {
              self.messagesData.insert([NewMessages], at: self.messagesData.count)
              self.ui.tableView.reloadData()
              DispatchQueue.main.async {
-                 let lastRow: Int = self.ui.tableView.numberOfRows(inSection: self.messagesData.count - 1) - 1
-                 let indexPath = IndexPath(row: lastRow, section: self.messagesData.count - 1);
-                 self.ui.tableView.scrollToBottomRow(animated: false)
-                 self.ui.tableView.reloadRows(at: [indexPath], with: .none)
+                 self.ui.tableView.scrollToBottom(animated: false)
+                 self.ui.tableView.layoutIfNeeded()
+                 self.ui.tableView.setContentOffset(CGPoint(x: 0, y: self.ui.tableView.contentSize.height - self.ui.tableView.frame.height - 20), animated: false)
              }
          }
     }
@@ -128,8 +129,6 @@ extension MessagesView: DataSource {
     func numberOfMessages(in section: Int) -> Int {
         return self.messagesData[section].count
     }
-    
-    
     
 }
 

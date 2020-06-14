@@ -10,8 +10,92 @@ import Foundation
 import UIKit
 
 
+
+extension MessagesUI: UITableViewDataSource {
+    
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return dataSource?.numberOfSections() ?? 0
+    }
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let message = dataSource?.headerTitle(for: section) else {
+                   fatalError("Message not defined for \(section)")
+            }
+        
+        if let firstMessageInSection = message.first {
+            let date = Date()
+            let dateString = MessagesViewModel.shared.chatTime(firstMessageInSection.createdAt, currentDate: date)
+            let label = DateHeader()
+            label.text = dateString
+            
+            let containerView = UIView()
+            
+            containerView.addSubview(label)
+            label.center(inView: containerView)
+            
+            
+            return containerView
+            
+        }
+        return nil
+    }
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+       return dataSource?.numberOfMessages(in: section) ?? 0
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let chatMessage = dataSource?.message(for: indexPath) else {
+                 fatalError("Message not defined for \(indexPath)")
+             }
+        let cellIdentifer = chatMessage.cellIdentifer()
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifer, for: indexPath) as! MessageCell
+        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
+
+        // Update UI for cell
+        if chatMessage.user.userId != currentUser.userId  {
+            cell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
+        } else {
+            cell.updateLayoutForBubbleStyle(positionInBlock)
+        }
+
+        cell.bind(withMessage:  chatMessage)
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+       
+        return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let chatCell = cell as! MessageCell
+        guard let Message = dataSource?.message(for: indexPath) else {
+                 fatalError("Message not defined for \(indexPath)")
+             }
+        
+        let chatMessage = Message
+        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
+
+        // Update UI for cell
+        if chatMessage.user.userId != currentUser.userId {
+            chatCell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
+        } else {
+            chatCell.updateLayoutForBubbleStyle(positionInBlock)
+        }
+        
+        //chatCell.layoutIfNeeded()
+    }
+    
+}
+
 extension MessagesUI: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Get the cell for the index of the model
         guard let cell = tableView.cellForRow(at: .init(row: indexPath.row, section: indexPath.section)) as? MessageCell else { return }
         let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
@@ -35,7 +119,7 @@ extension MessagesUI: UITableViewDelegate {
     }
     
 
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
        // Get the cell for the index of the model
        guard let cell = tableView.cellForRow(at: .init(row: indexPath.row, section: indexPath.section)) as? MessageCell else { return }
        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
@@ -53,7 +137,7 @@ extension MessagesUI: UITableViewDelegate {
     
  
     
-    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+    public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard let item = dataSource?.message(for: indexPath) else {
                  fatalError("Message not defined for \(indexPath)")
             }
@@ -83,7 +167,7 @@ extension MessagesUI: UITableViewDelegate {
         return nil
     }
     
-    func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+    public func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 
          // Ensure we can get the expected identifier
          guard let identifier = configuration.identifier as? [String : Int] else { return nil }

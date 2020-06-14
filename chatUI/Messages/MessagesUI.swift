@@ -15,11 +15,11 @@ import UIKit
     @objc optional func SendEmoji(emoji: String)
 }
 
-class MessagesUI : UIView {
+open class MessagesUI : UIView {
  
   /// The data source for the messenger
-  public weak var dataSource: DataSource?
-  public weak var inputDelegate: inputDelegate?
+   weak var dataSource: DataSource?
+   weak var inputDelegate: inputDelegate?
     
     public var currentUser: User!
     
@@ -114,7 +114,7 @@ class MessagesUI : UIView {
      }()
 
     
-     var  lineboardView: UIView = {
+     var lineboardView: UIView = {
          let lineboardView = UIView()
          lineboardView.backgroundColor = .systemGray6
          return lineboardView
@@ -169,20 +169,21 @@ class MessagesUI : UIView {
            }
        }
 
-    
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUIElements()
         addObserver()
+        
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override func draw(_ rect: CGRect) {
+    open override func draw(_ rect: CGRect) {
         super.draw(rect)
+        
+        
         keyboardHeight = KeyboardService.keyboardHeight()
         print(keyboardHeight)
         setupConstraints()
@@ -205,6 +206,7 @@ class MessagesUI : UIView {
         }
 
     }
+    
     
     /// send a quick Emoji
     private func quickEmoji() {
@@ -307,6 +309,7 @@ class MessagesUI : UIView {
     }
     
     
+
     private func restButton() {
         self.sendButton.currentBackgroundImage?.withTintColor(.mainBlue)
         self.sendButton.isEnabled = true
@@ -329,8 +332,7 @@ extension MessagesUI {
 
     private func setupUIElements() {
         addSubview(tableView)
-        tableView.contentInset = .init(top: 0, left: 0, bottom: -20, right: 0)
-        
+    
         addSubview(stackView)
         stackView.addArrangedSubview(lineboardView)
         stackView.addArrangedSubview(inputToolbar)
@@ -411,88 +413,6 @@ extension MessagesUI {
     
 }
 
-extension MessagesUI: UITableViewDataSource {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return dataSource?.numberOfSections() ?? 0
-    }
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let message = dataSource?.headerTitle(for: section) else {
-                   fatalError("Message not defined for \(section)")
-            }
-        
-        if let firstMessageInSection = message.first {
-            let date = Date()
-            let dateString = MessagesViewModel.shared.chatTime(firstMessageInSection.createdAt, currentDate: date)
-            let label = DateHeader()
-            label.text = dateString
-            
-            let containerView = UIView()
-            
-            containerView.addSubview(label)
-            label.center(inView: containerView)
-            
-            
-            return containerView
-            
-        }
-        return nil
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       return dataSource?.numberOfMessages(in: section) ?? 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let chatMessage = dataSource?.message(for: indexPath) else {
-                 fatalError("Message not defined for \(indexPath)")
-             }
-        let cellIdentifer = chatMessage.cellIdentifer()
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifer, for: indexPath) as! MessageCell
-        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
-
-        // Update UI for cell
-        if chatMessage.user.userId != currentUser.userId  {
-            cell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
-        } else {
-            cell.updateLayoutForBubbleStyle(positionInBlock)
-        }
-
-        cell.bind(withMessage:  chatMessage)
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-       
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let chatCell = cell as! MessageCell
-        guard let Message = dataSource?.message(for: indexPath) else {
-                 fatalError("Message not defined for \(indexPath)")
-             }
-        
-        let chatMessage = Message
-        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
-
-        // Update UI for cell
-        if chatMessage.user.userId != currentUser.userId {
-            chatCell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
-        } else {
-            chatCell.updateLayoutForBubbleStyle(positionInBlock)
-        }
-        
-        //chatCell.layoutIfNeeded()
-    }
-    
-}
 
 extension MessagesUI: quickEmojiDelegate, recordDelegate {
     func AudioFile(_ url: URL) {
@@ -523,7 +443,7 @@ extension MessagesUI: quickEmojiDelegate, recordDelegate {
 }
 
 extension MessagesUI: ImagePickerDelegate {
-    func didSelect(image: UIImage?, caption: String?) {
+    public func didSelect(image: UIImage?, caption: String?) {
         guard let image = image else { return }
         self.inputDelegate?.SendImage?(image: image, caption: caption)
     }
@@ -534,7 +454,7 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
     
     // Mark: Keyboard Configure
     // while writing something
-    func textViewDidChange(_ textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
        /// disable button if entered has no text
         guard let text = textView.text else { return }
          if text.count == 0 {
@@ -567,14 +487,18 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
                 })
             }
 
+            self.tableView.scrollToBottom(animated: false)
+            self.tableView.layoutIfNeeded()
+            self.tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentSize.height - tableView.frame.height - 20), animated: false)
              self.layoutIfNeeded()
+           
          }
 
      }
     
     
     // *** Call layoutIfNeeded on superview for animation when changing height ***
-    func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
+    public func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
         UIView.animate(withDuration: 0, delay: 0, options: UIView.AnimationOptions.curveEaseOut, animations: {
             self.layoutIfNeeded()
             }, completion: { (completed) in
