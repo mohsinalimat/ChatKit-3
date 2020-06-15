@@ -78,12 +78,12 @@ class MessageTextCell: MessageCell {
         super.tranformUI(isIncoming)
           if isIncoming {
               
-              messageLabel.textColor = style.incomingTextColor
-              messageLabel.foregroundHighlightedColor = { (linkResult) in return self.style.incomingTextColor }
-              messageLabel.foregroundColor = { (linkResult) in return self.style.incomingTextColor }
+              messageLabel.textColor = styles.incomingTextColor
+              messageLabel.foregroundHighlightedColor = { (linkResult) in return self.styles.incomingTextColor }
+              messageLabel.foregroundColor = { (linkResult) in return self.styles.incomingTextColor }
         
             
-              bubbleView.backgroundColor = style.incomingBubbleColor
+              bubbleView.backgroundColor = styles.incomingBubbleColor
               leftConstrain.isActive = true
               rightConstrain.isActive = false
               stackView.alignment = .leading
@@ -92,10 +92,10 @@ class MessageTextCell: MessageCell {
             
           } else {
         
-              messageLabel.textColor = style.outgoingTextColor
-              messageLabel.foregroundHighlightedColor = { (linkResult) in return self.style.outgoingTextColor }
-              messageLabel.foregroundColor = { (linkResult) in return self.style.outgoingTextColor }
-              bubbleView.backgroundColor = style.outgoingBubbleColor
+              messageLabel.textColor = styles.outgoingTextColor
+              messageLabel.foregroundHighlightedColor = { (linkResult) in return self.styles.outgoingTextColor }
+              messageLabel.foregroundColor = { (linkResult) in return self.styles.outgoingTextColor }
+              bubbleView.backgroundColor = styles.outgoingBubbleColor
               leftConstrain.isActive = false
               rightConstrain.isActive = true
               stackView.alignment = .trailing

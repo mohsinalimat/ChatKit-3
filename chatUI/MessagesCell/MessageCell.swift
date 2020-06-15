@@ -19,9 +19,7 @@ enum PositionInBlock {
 
 class MessageCell: UITableViewCell {
     
-     var style: MessegesStyle {
-        return ChatKit.Styles
-    }
+     open var styles = ChatKit.Styles
     
      var bubbleView: UIView = {
         let bubble = UIView()

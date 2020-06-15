@@ -62,6 +62,7 @@ extension MessagesUI: UITableViewDataSource {
             cell.updateLayoutForBubbleStyle(positionInBlock)
         }
 
+        cell.styles = self.style as! chatUIStyle
         cell.bind(withMessage:  chatMessage)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear

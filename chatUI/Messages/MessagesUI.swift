@@ -17,9 +17,9 @@ import UIKit
 
 open class MessagesUI : UIView {
  
-  /// The data source for the messenger
-   weak var dataSource: DataSource?
-   weak var inputDelegate: inputDelegate?
+    /// The data source for the messenger
+    weak var dataSource: DataSource?
+    weak var inputDelegate: inputDelegate?
     
     public var currentUser: User!
     
@@ -492,7 +492,7 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
             }
 
             
-             self.layoutIfNeeded()
+            self.layoutIfNeeded()
          } else {
             buttonViewLeftConstraint.constant = -108
             if style.isSupportQuickEmoji {

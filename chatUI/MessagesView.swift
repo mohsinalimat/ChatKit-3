@@ -12,8 +12,9 @@ import UIKit
 class chatUI: MessagesUI {
     override var style: MessegesStyle {
         var style = ChatKit.Styles
-       /// style.backgroundColor = .red
-        style.isSupportQuickEmoji = false
+//        style.backgroundColor = .red
+//        style.isSupportQuickEmoji = false
+//        style.incomingBubbleColor = .red
         return style
     }
 }
