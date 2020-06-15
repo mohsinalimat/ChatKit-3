@@ -9,6 +9,14 @@
 import UIKit
 
 
+class chatUI: MessagesUI {
+    override var style: MessegesStyle {
+        var style = ChatKit.Styles
+       /// style.backgroundColor = .red
+        style.isSupportQuickEmoji = false
+        return style
+    }
+}
 
 class MessagesView: UIViewController {
     
@@ -20,7 +28,7 @@ class MessagesView: UIViewController {
     let image2 = UIImage(named: "image2")
     let image3 = UIImage(named: "me")
     
-    private var ui = MessagesUI()
+    private var ui = chatUI()
     var viewModel = MessagesViewModel()
 
     override func viewWillDisappear(_ animated: Bool) {

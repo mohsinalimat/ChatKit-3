@@ -47,12 +47,12 @@ open class MessagesUI : UIView {
     
    private lazy var messageTextView: GrowingTextView = {
         let tex = GrowingTextView()
-        tex.placeholder = "Message"
+        tex.placeholder = style.inputPlaceholder
         tex.minHeight = 35
         tex.maxHeight = 130
         tex.layer.cornerRadius = 13
-        tex.backgroundColor = .systemGray6
-        tex.placeholderColor = .systemGray2
+        tex.backgroundColor = style.inputTextViewBackgroundColor
+        tex.placeholderColor = style.inputPlaceholderTextColor
         tex.font = UIFont.systemFont(ofSize: 16)
         tex.enablesReturnKeyAutomatically = true
         tex.trimWhiteSpaceWhenEndEditing = true
@@ -64,17 +64,14 @@ open class MessagesUI : UIView {
     
     private var sendButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
         button.addTarget(self, action: #selector(didPressSendTextButton), for: UIControl.Event.touchUpInside)
         button.setDimensions(width: 25, height: 25)
         button.isEnabled = true
-        button.tag = 0
         return button
      }()
     
     private var mediaButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "photo_icon")?.withTintColor(.mainBlue), for: .normal)
         button.addTarget(self, action: #selector(didPressSendFileButton), for: UIControl.Event.touchUpInside)
         button.setDimensions(width: 25, height: 25)
          return button
@@ -82,7 +79,6 @@ open class MessagesUI : UIView {
     
     private var audioButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "audio_icon")?.withTintColor(.mainBlue), for: .normal)
         button.addTarget(self, action: #selector(didPressSendAudioButton), for: UIControl.Event.touchUpInside)
         button.setDimensions(width: 25, height: 25)
          return button
@@ -91,7 +87,6 @@ open class MessagesUI : UIView {
     
     private var emojiButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "emoji_icon")?.withTintColor(.mainBlue), for: .normal)
         button.addTarget(self, action: #selector(didPressSendEmojiButton), for: UIControl.Event.touchUpInside)
         button.setDimensions(width: 25, height: 25)
          return button
@@ -99,7 +94,6 @@ open class MessagesUI : UIView {
     
     private var moreButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "more_icon")?.withTintColor(.mainBlue), for: .normal)
         button.addTarget(self, action: #selector(didPressSendMoreButton), for: UIControl.Event.touchUpInside)
         button.setDimensions(width: 25, height: 25)
          return button
@@ -151,6 +145,12 @@ open class MessagesUI : UIView {
         return stackView
     }()
     
+    
+    /// The style of the chat
+    open var style: MessegesStyle {
+        return ChatKit.Styles
+    }
+    
 
    private var buttonViewLeftConstraint = NSLayoutConstraint()
    private var textMore = true
@@ -171,6 +171,7 @@ open class MessagesUI : UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = style.backgroundColor
         setupUIElements()
         addObserver()
         
@@ -183,9 +184,9 @@ open class MessagesUI : UIView {
     open override func draw(_ rect: CGRect) {
         super.draw(rect)
         
-        
-        keyboardHeight = KeyboardService.keyboardHeight()
-        print(keyboardHeight)
+        self.backgroundColor = style.backgroundColor
+        self.keyboardHeight = KeyboardService.keyboardHeight()
+
         setupConstraints()
         self.imagePicker = ImagePicker(presentationController: parentViewController!, delegate: self)
         
@@ -217,7 +218,7 @@ open class MessagesUI : UIView {
         self.sendButton.tag = 2
         let previouTransform =  sendButton.transform
         UIView.animate(withDuration: 0.2,animations: {
-        self.sendButton.setBackgroundImage(UIImage(named: "cancel_icon")?.withTintColor(.mainBlue), for: .normal)
+        self.sendButton.setBackgroundImage(self.style.cancelIcon.withTintColor(self.style.inputIconsColor), for: .normal)
         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
         self.quickEmojiV.transform  = .identity
         },completion: { _ in
@@ -234,7 +235,7 @@ open class MessagesUI : UIView {
         sendButton.tag = 0
         let previouTransform =  sendButton.transform
         UIView.animate(withDuration: 0.2,animations: {
-        self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
+        self.sendButton.setBackgroundImage(self.style.quickEmojiIcon.withTintColor(self.style.inputIconsColor), for: .normal)
         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
         self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.1, y: 0.1)
         },completion: { _ in
@@ -255,16 +256,20 @@ open class MessagesUI : UIView {
          /// rest textview
          buttonViewLeftConstraint.constant = 10
          messageTextView.text = nil
-         sendButton.tag = 0
-         let previouTransform =  sendButton.transform
-         UIView.animate(withDuration: 0.2,animations: {
-         self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
-         self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
-         },completion: { _ in
-             UIView.animate(withDuration: 0.2) {
-                 self.sendButton.transform  = previouTransform
-                 }
-         })
+        
+        if style.isSupportQuickEmoji {
+            sendButton.tag = 0
+            let previouTransform =  sendButton.transform
+            UIView.animate(withDuration: 0.2,animations: {
+            self.sendButton.setBackgroundImage(self.style.quickEmojiIcon.withTintColor(self.style.inputIconsColor), for: .normal)
+            self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
+            },completion: { _ in
+                UIView.animate(withDuration: 0.2) {
+                    self.sendButton.transform  = previouTransform
+                    }
+            })
+        }
+
          self.layoutIfNeeded()
     }
     
@@ -348,6 +353,19 @@ extension MessagesUI {
         buttonView.addSubview(moreButton)
         buttonView.addSubview(mediaButton)
         buttonView.addSubview(emojiButton)
+        
+       if style.isSupportQuickEmoji {
+            sendButton.setBackgroundImage(style.quickEmojiIcon.withTintColor(style.inputIconsColor), for: .normal)
+            sendButton.tag = 0
+       } else {
+            sendButton.setBackgroundImage(style.sendIcon.withTintColor(style.inputIconsColor), for: .normal)
+            sendButton.tag = 1
+        }
+       
+        moreButton.setBackgroundImage(style.moreIcon.withTintColor(style.inputIconsColor), for: .normal)
+        mediaButton.setBackgroundImage(style.mediaIcon.withTintColor(style.inputIconsColor), for: .normal)
+        emojiButton.setBackgroundImage(style.stickersIcon.withTintColor(style.inputIconsColor), for: .normal)
+        audioButton.setBackgroundImage(style.audioIcon.withTintColor(style.inputIconsColor), for: .normal)
 
     }
     
@@ -427,7 +445,7 @@ extension MessagesUI: quickEmojiDelegate, recordDelegate {
          sendButton.tag = 0
          let previouTransform =  sendButton.transform
          UIView.animate(withDuration: 0.2,animations: {
-         self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
+        self.sendButton.setBackgroundImage(self.style.quickEmojiIcon.withTintColor(self.style.inputIconsColor), for: .normal)
          self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
          self.quickEmojiV.transform = self.quickEmojiV.transform.scaledBy(x: 0.1, y: 0.1)
          },completion: { _ in
@@ -459,33 +477,39 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
         guard let text = textView.text else { return }
          if text.count == 0 {
             buttonViewLeftConstraint.constant = 10
-            sendButton.tag = 0
             
-            UIView.animate(withDuration: 0.2,animations: {
-            self.sendButton.setBackgroundImage(UIImage(named: "like_icon")?.withTintColor(.mainBlue), for: .normal)
-            self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
-            },completion: { _ in
-                UIView.animate(withDuration: 0.2) {
-                    self.sendButton.transform  = .identity
-                    self.textMore = true
-                    }
-            })
-            
-             self.layoutIfNeeded()
-         } else {
-            buttonViewLeftConstraint.constant = -108
-            sendButton.tag = 1
-            if textMore == true {
+            if style.isSupportQuickEmoji {
+                sendButton.tag = 0
                 UIView.animate(withDuration: 0.2,animations: {
-                self.sendButton.setBackgroundImage(UIImage(named: "send_icon")?.withTintColor(.mainBlue), for: .normal)
+                self.sendButton.setBackgroundImage(self.style.quickEmojiIcon.withTintColor(self.style.inputIconsColor), for: .normal)
                 self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
                 },completion: { _ in
                     UIView.animate(withDuration: 0.2) {
                         self.sendButton.transform  = .identity
-                        self.textMore = false
+                        self.textMore = true
                         }
                 })
             }
+
+            
+             self.layoutIfNeeded()
+         } else {
+            buttonViewLeftConstraint.constant = -108
+            if style.isSupportQuickEmoji {
+                sendButton.tag = 1
+                if textMore == true {
+                    UIView.animate(withDuration: 0.2,animations: {
+                    self.sendButton.setBackgroundImage(self.style.sendIcon.withTintColor(self.style.inputIconsColor), for: .normal)
+                    self.sendButton.transform = self.sendButton.transform.scaledBy(x: 1.1, y: 1.1)
+                    },completion: { _ in
+                        UIView.animate(withDuration: 0.2) {
+                            self.sendButton.transform  = .identity
+                            self.textMore = false
+                            }
+                    })
+                }
+            }
+
 
             self.tableView.scrollToBottom(animated: false)
             self.tableView.layoutIfNeeded()

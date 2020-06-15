@@ -19,6 +19,10 @@ enum PositionInBlock {
 
 class MessageCell: UITableViewCell {
     
+     var style: MessegesStyle {
+        return ChatKit.Styles
+    }
+    
      var bubbleView: UIView = {
         let bubble = UIView()
         bubble.layer.cornerRadius = 20

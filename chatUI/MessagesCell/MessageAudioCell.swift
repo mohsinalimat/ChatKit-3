@@ -92,9 +92,9 @@ class MessageAudioCell: MessageCell, AVAudioPlayerDelegate {
         tranformUI(message.isIncoming)
     }
     
-    override func tranformUI(_ isOutgoingMessage: Bool) {
-        super.tranformUI(isOutgoingMessage)
-        if isOutgoingMessage {
+    override func tranformUI(_ isIncoming: Bool) {
+        super.tranformUI(isIncoming)
+        if isIncoming {
             playBtn.tintColor = .black()
             slider.tintColor = .black()
             time.textColor = .black()

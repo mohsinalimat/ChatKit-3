@@ -74,16 +74,16 @@ class MessageTextCell: MessageCell {
     }
     
     // add constraints to subviews and set color
-    override func tranformUI(_ isOutgoingMessage: Bool) {
-        super.tranformUI(isOutgoingMessage)
-          if isOutgoingMessage {
+    override func tranformUI(_ isIncoming: Bool) {
+        super.tranformUI(isIncoming)
+          if isIncoming {
               
-              messageLabel.textColor = .black()
-              messageLabel.foregroundHighlightedColor = { (linkResult) in return .black() }
-              messageLabel.foregroundColor = { (linkResult) in return .black() }
+              messageLabel.textColor = style.incomingTextColor
+              messageLabel.foregroundHighlightedColor = { (linkResult) in return self.style.incomingTextColor }
+              messageLabel.foregroundColor = { (linkResult) in return self.style.incomingTextColor }
         
             
-              bubbleView.backgroundColor = .systemGray6
+              bubbleView.backgroundColor = style.incomingBubbleColor
               leftConstrain.isActive = true
               rightConstrain.isActive = false
               stackView.alignment = .leading
@@ -92,10 +92,10 @@ class MessageTextCell: MessageCell {
             
           } else {
         
-              messageLabel.textColor = .white
-              messageLabel.foregroundHighlightedColor = { (linkResult) in return .white }
-              messageLabel.foregroundColor = { (linkResult) in return .white }
-              bubbleView.backgroundColor = .mainBlue
+              messageLabel.textColor = style.outgoingTextColor
+              messageLabel.foregroundHighlightedColor = { (linkResult) in return self.style.outgoingTextColor }
+              messageLabel.foregroundColor = { (linkResult) in return self.style.outgoingTextColor }
+              bubbleView.backgroundColor = style.outgoingBubbleColor
               leftConstrain.isActive = false
               rightConstrain.isActive = true
               stackView.alignment = .trailing

@@ -94,26 +94,26 @@ class MessageCaptionCell: MessageCell {
          tranformUI(message.isIncoming)
     }
     
-    override func tranformUI(_ isOutgoingMessage: Bool) {
-        super.tranformUI(isOutgoingMessage)
-        if isOutgoingMessage {
+    override func tranformUI(_ isIncoming: Bool) {
+        super.tranformUI(isIncoming)
+        if isIncoming {
     
-            captionLabel.textColor = .black()
-            captionLabel.foregroundHighlightedColor = { (linkResult) in return .black() }
-            captionLabel.foregroundColor = { (linkResult) in return .black() }
+            captionLabel.textColor = style.incomingTextColor
+            captionLabel.foregroundHighlightedColor = { (linkResult) in return self.style.incomingTextColor }
+            captionLabel.foregroundColor = { (linkResult) in return self.style.incomingTextColor }
             
-            bubbleView.backgroundColor = .systemGray6
+            bubbleView.backgroundColor = style.incomingBubbleColor
             leftConstrain.isActive = true
             rightConstrain.isActive = false
             stackView.alignment = .leading
             messageStatusView.setupConstraints(.left)
             messageStatusView.layoutIfNeeded()
         } else {
-            captionLabel.textColor = .white
-            captionLabel.foregroundHighlightedColor = { (linkResult) in return .white }
-            captionLabel.foregroundColor = { (linkResult) in return .white }
+            captionLabel.textColor = style.outgoingTextColor
+            captionLabel.foregroundHighlightedColor = { (linkResult) in return self.style.outgoingTextColor }
+            captionLabel.foregroundColor = { (linkResult) in return self.style.outgoingTextColor }
         
-            bubbleView.backgroundColor = .mainBlue
+            bubbleView.backgroundColor = style.outgoingBubbleColor
             leftConstrain.isActive = false
             rightConstrain.isActive = true
             stackView.alignment = .trailing

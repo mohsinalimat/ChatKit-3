@@ -50,9 +50,9 @@ class MessageImageCell: MessageCell {
         tranformUI(message.isIncoming)
     }
     
-    override func tranformUI(_ isOutgoingMessage: Bool) {
-        super.tranformUI(isOutgoingMessage)
-        if isOutgoingMessage {
+    override func tranformUI(_ isIncoming: Bool) {
+        super.tranformUI(isIncoming)
+        if isIncoming {
             leftConstrain.isActive = true
             rightConstrain.isActive = false
             stackView.alignment = .leading

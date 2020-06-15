@@ -31,6 +31,7 @@
 		644B2F2624498396006D2FA5 /* GrowingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F2524498396006D2FA5 /* GrowingTextView.swift */; };
 		644B2F28244983CA006D2FA5 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */; };
 		644B2F2A2449841D006D2FA5 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F292449841D006D2FA5 /* UIColor+Extension.swift */; };
+		6450A8A32496F4A60013C8CE /* ChatKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6450A8A22496F4A60013C8CE /* ChatKit.swift */; };
 		64615C432488252F00B09519 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C422488252F00B09519 /* AudioRecorder.swift */; };
 		64615C4C248ED93D00B09519 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4B248ED93D00B09519 /* DataSource.swift */; };
 		64615C5024907EE100B09519 /* MessagesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4F24907EE100B09519 /* MessagesTableView.swift */; };
@@ -89,6 +90,7 @@
 		644B2F2524498396006D2FA5 /* GrowingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
 		644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		644B2F292449841D006D2FA5 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		6450A8A22496F4A60013C8CE /* ChatKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatKit.swift; sourceTree = "<group>"; };
 		64615C422488252F00B09519 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		64615C4B248ED93D00B09519 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		64615C4F24907EE100B09519 /* MessagesTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableView.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				644B2EFF24497FFE006D2FA5 /* Assets.xcassets */,
 				644B2F0124497FFE006D2FA5 /* LaunchScreen.storyboard */,
 				644B2F0424497FFE006D2FA5 /* Info.plist */,
+				6450A8A22496F4A60013C8CE /* ChatKit.swift */,
 			);
 			path = chatUI;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				64E444092452420700DA8076 /* ImageEditorUI.swift in Sources */,
 				642502EF244E6684002E1785 /* MessageCaptionCell.swift in Sources */,
 				64E6047724845070000FBBE8 /* quickEmojiView.swift in Sources */,
+				6450A8A32496F4A60013C8CE /* ChatKit.swift in Sources */,
 				64615C5024907EE100B09519 /* MessagesTableView.swift in Sources */,
 				64674E45244AD7D700E77AFB /* Date+Extension.swift in Sources */,
 				64E444142452612300DA8076 /* TouchDrawView.swift in Sources */,
