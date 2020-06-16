@@ -73,14 +73,13 @@ open class MessagesUI : UIView {
     private var mediaButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendFileButton), for: UIControl.Event.touchUpInside)
-        button.setDimensions(width: 25, height: 25)
+        
          return button
      }()
     
     private var audioButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendAudioButton), for: UIControl.Event.touchUpInside)
-        button.setDimensions(width: 25, height: 25)
          return button
      }()
     
@@ -95,7 +94,6 @@ open class MessagesUI : UIView {
     private var moreButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendMoreButton), for: UIControl.Event.touchUpInside)
-        button.setDimensions(width: 25, height: 25)
          return button
      }()
     
@@ -131,6 +129,18 @@ open class MessagesUI : UIView {
         let view = recordAudio()
         view.backgroundColor = .systemGray6
         return view
+    }()
+    
+    
+    
+   private var iconsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.backgroundColor = .clear
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.isLayoutMarginsRelativeArrangement = true
+        return stackView
     }()
     
     
@@ -254,7 +264,7 @@ open class MessagesUI : UIView {
          self.inputDelegate?.sendText?(text: messageTextView.text!)
 
          /// rest textview
-         buttonViewLeftConstraint.constant = 10
+         buttonViewLeftConstraint.constant = 0
          messageTextView.text = nil
         
         if style.isSupportQuickEmoji {
@@ -345,14 +355,22 @@ extension MessagesUI {
       
         recordAudioView.delegate = self
     
+        
+        
+        
         inputToolbar.addSubview(messageTextView)
         inputToolbar.addSubview(sendButton)
-        inputToolbar.addSubview(buttonView)
-        inputToolbar.addSubview(audioButton)
+        inputToolbar.addSubview(iconsStackView)
+        inputToolbar.addSubview(emojiButton)
         
-        buttonView.addSubview(moreButton)
-        buttonView.addSubview(mediaButton)
-        buttonView.addSubview(emojiButton)
+
+        
+       // buttonView.addSubview(iconsStackView)
+        
+        iconsStackView.addArrangedSubview(moreButton)
+        iconsStackView.addArrangedSubview(mediaButton)
+        iconsStackView.addArrangedSubview(audioButton)
+    
         
        if style.isSupportQuickEmoji {
             sendButton.setBackgroundImage(style.quickEmojiIcon.withTintColor(style.inputIconsColor), for: .normal)
@@ -367,6 +385,8 @@ extension MessagesUI {
         emojiButton.setBackgroundImage(style.stickersIcon.withTintColor(style.inputIconsColor), for: .normal)
         audioButton.setBackgroundImage(style.audioIcon.withTintColor(style.inputIconsColor), for: .normal)
 
+
+     
     }
     
     
@@ -381,28 +401,37 @@ extension MessagesUI {
         lineboardViewHeight.isActive = true
         lineboardViewHeight.constant = 1
      
- 
         
         addLayoutGuide(keyboardLayoutGuide)
     
         stackView.anchor(top: tableView.bottomAnchor,left: leftAnchor,bottom: keyboardLayoutGuide.topAnchor,right: rightAnchor)
     
-        buttonViewLeftConstraint = buttonView.leftAnchor.constraint(equalTo: inputToolbar.leftAnchor,constant: 10)
-        buttonView.anchor(bottom: messageTextView.bottomAnchor
-               ,paddingBottom: 5,width: 108,height: 25)
+        buttonViewLeftConstraint = iconsStackView.leftAnchor.constraint(equalTo: inputToolbar.leftAnchor)
+        iconsStackView.anchor(bottom: messageTextView.bottomAnchor
+               ,paddingBottom: 5)
         buttonViewLeftConstraint.isActive = true
+        
+        iconsStackView.spacing = 15
+        moreButton.setDimensions(width: 25, height: 25)
+        mediaButton.setDimensions(width: 25, height: 25)
+        audioButton.setDimensions(width: 25, height: 25)
+        
+        audioButton.isHidden = !style.isSupportAudio
+        mediaButton.isHidden = !style.isSupportImages
+        moreButton.isHidden = !style.isSupportMap
         
         
         tableView.anchor(top: safeAreaLayoutGuide.topAnchor,left: leftAnchor,right: rightAnchor)
     
         sendButton.anchor(bottom: messageTextView.bottomAnchor, right: inputToolbar.rightAnchor,paddingBottom: 5, paddingRight: 10)
-        audioButton.anchor(bottom: messageTextView.bottomAnchor, right: messageTextView.rightAnchor,paddingBottom: 5, paddingRight: 5)
+        emojiButton.anchor(bottom: messageTextView.bottomAnchor, right: messageTextView.rightAnchor,paddingBottom: 5, paddingRight: 5)
         
-        messageTextView.anchor(top: inputToolbar.topAnchor,left: buttonView.rightAnchor,bottom: inputToolbar.bottomAnchor,right: sendButton.leftAnchor, paddingTop: 5,paddingLeft: 5,paddingBottom: 5,paddingRight: 5)
+        messageTextView.anchor(top: inputToolbar.topAnchor,left: iconsStackView.rightAnchor,bottom: inputToolbar.bottomAnchor,right: sendButton.leftAnchor, paddingTop: 5,paddingLeft: 10,paddingBottom: 5,paddingRight: 5)
+        
+        
+        
 
-        moreButton.centerY(inView: buttonView,leftAnchor: buttonView.leftAnchor)
-        mediaButton.centerY(inView: buttonView,leftAnchor: moreButton.rightAnchor,paddingLeft: 15)
-        emojiButton.centerY(inView: buttonView,leftAnchor: mediaButton.rightAnchor,paddingLeft: 15)
+      
     }
     
     // register observers
@@ -476,7 +505,7 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
        /// disable button if entered has no text
         guard let text = textView.text else { return }
          if text.count == 0 {
-            buttonViewLeftConstraint.constant = 10
+            buttonViewLeftConstraint.constant = 0
             
             if style.isSupportQuickEmoji {
                 sendButton.tag = 0
@@ -494,7 +523,7 @@ extension MessagesUI: GrowingTextViewDelegate, UITextViewDelegate {
             
             self.layoutIfNeeded()
          } else {
-            buttonViewLeftConstraint.constant = -108
+            buttonViewLeftConstraint.constant = -iconsStackView.frame.width
             if style.isSupportQuickEmoji {
                 sendButton.tag = 1
                 if textMore == true {

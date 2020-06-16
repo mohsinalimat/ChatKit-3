@@ -78,6 +78,8 @@ public protocol MessegesStyle {
     
     var isSupportStickers : Bool { get }
     
+    var showingAvataer : Bool { get }
+    
 
     
 }
@@ -85,6 +87,8 @@ public protocol MessegesStyle {
 
 public struct chatUIStyle: MessegesStyle {
     
+    
+    public var showingAvataer: Bool = true
     
     public var isSupportImages: Bool = true
     

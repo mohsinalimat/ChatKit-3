@@ -16,7 +16,6 @@ enum PositionInBlock {
 }
 
 
-
 class MessageCell: UITableViewCell {
     
      open var styles = ChatKit.Styles
@@ -35,7 +34,6 @@ class MessageCell: UITableViewCell {
          stackView.axis = .vertical
          stackView.distribution = .fill
          stackView.alignment = .leading
-         stackView.layoutMargins = UIEdgeInsets(top: 2, left: 15, bottom: 2, right: 15)
          stackView.isLayoutMarginsRelativeArrangement = true
          return stackView
      }()
@@ -46,6 +44,17 @@ class MessageCell: UITableViewCell {
         return view
     }()
 
+    private var avatar: UIImageView = {
+          let image = UIImageView()
+          image.clipsToBounds = true
+          image.layer.cornerRadius = 15
+          image.layer.masksToBounds = true
+          image.backgroundColor = .red
+          image.contentMode = .scaleAspectFit
+         return image
+     }()
+    
+    
 
     
      var leftConstrain: NSLayoutConstraint!
@@ -58,11 +67,25 @@ class MessageCell: UITableViewCell {
         stackView.addArrangedSubview(bubbleView)
         stackView.addArrangedSubview(messageStatusView)
         
+        setupUIElements()
+    
+    }
+    
+     func isShowingAvatar() {
+        self.addSubview(avatar)
+        stackView.layoutMargins = UIEdgeInsets(top: 2, left: 5, bottom: 2, right: 15)
+        avatar.anchor(left: leftAnchor,bottom: bottomAnchor,paddingLeft: 5,paddingBottom: 5, width: 30,height: 30)
+        stackView.anchor(top: topAnchor,bottom: bottomAnchor)
+        leftConstrain = stackView.leftAnchor.constraint(equalTo: avatar.rightAnchor)
+        rightConstrain = stackView.rightAnchor.constraint(equalTo: rightAnchor)
+    }
+    
+    func isHidingAvater() {
+        self.avatar.removeFromSuperview()
+        stackView.layoutMargins = UIEdgeInsets(top: 2, left: 15, bottom: 2, right: 15)
         stackView.anchor(top: topAnchor,bottom: bottomAnchor)
         leftConstrain = stackView.leftAnchor.constraint(equalTo: leftAnchor)
         rightConstrain = stackView.rightAnchor.constraint(equalTo: rightAnchor)
-
-        setupUIElements()
     }
     
     
@@ -85,15 +108,19 @@ class MessageCell: UITableViewCell {
     func updateLayoutForBubbleStyleIsIncoming(_ positionInBlock: PositionInBlock) {
          switch positionInBlock {
          case .top:
+             avatar.isHidden = true
              messageStatusView.isHidden = true
              bubbleView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMaxXMaxYCorner]
          case .center:
+             avatar.isHidden = true
              messageStatusView.isHidden = true
              bubbleView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner]
          case .bottom:
+             avatar.isHidden = false
              messageStatusView.isHidden = false
              bubbleView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
          default:
+            avatar.isHidden = false
              messageStatusView.isHidden = false
              bubbleView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMaxXMaxYCorner]
             

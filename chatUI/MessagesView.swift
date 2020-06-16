@@ -12,6 +12,10 @@ import UIKit
 class chatUI: MessagesUI {
     override var style: MessegesStyle {
         var style = ChatKit.Styles
+          style.showingAvataer = false
+          style.isSupportAudio = false
+          style.isSupportImages = false
+          style.isSupportQuickEmoji = false
 //        style.backgroundColor = .red
 //        style.isSupportQuickEmoji = false
 //        style.incomingBubbleColor = .red
@@ -24,6 +28,7 @@ class MessagesView: UIViewController {
     
     let MeFaris = User(userId: "1", fullname: "Faris", avatar: #imageLiteral(resourceName: "audio_icon"))
     let Tim = User(userId: "2", fullname: "Tim", avatar: #imageLiteral(resourceName: "emoji_3"))
+    let goh = User(userId: "3", fullname: "goh", avatar: #imageLiteral(resourceName: "emoji_3"))
     
     let image1 = UIImage(named: "image1")
     let image2 = UIImage(named: "image2")
@@ -68,7 +73,13 @@ class MessagesView: UIViewController {
             Messages(objectId: "1323", user: Tim, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/22/2019"), isIncoming: true),
             Messages(objectId: "1323", user: Tim, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
             
-            Messages(objectId: "1323", user: MeFaris, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: false),
+            Messages(objectId: "1323", user: goh, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
+            
+            Messages(objectId: "1323", user: goh, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
+            
+            Messages(objectId: "1323", user: goh, text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
+            
+            Messages(objectId: "1323", user: goh, text: "Lorem Ipsum is simply", createdAt: Date.dateString(customString: "05/23/2019"), isIncoming: true),
          ]
         
         

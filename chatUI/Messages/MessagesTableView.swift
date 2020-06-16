@@ -57,8 +57,14 @@ extension MessagesUI: UITableViewDataSource {
 
         // Update UI for cell
         if chatMessage.user.userId != currentUser.userId  {
+            if style.showingAvataer == true {
+                cell.isShowingAvatar()
+            } else {
+                cell.isHidingAvater()
+            }
             cell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
         } else {
+            cell.isHidingAvater()
             cell.updateLayoutForBubbleStyle(positionInBlock)
         }
 
@@ -74,24 +80,24 @@ extension MessagesUI: UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let chatCell = cell as! MessageCell
-        guard let Message = dataSource?.message(for: indexPath) else {
-                 fatalError("Message not defined for \(indexPath)")
-             }
-        
-        let chatMessage = Message
-        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
-
-        // Update UI for cell
-        if chatMessage.user.userId != currentUser.userId {
-            chatCell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
-        } else {
-            chatCell.updateLayoutForBubbleStyle(positionInBlock)
-        }
-        
-        //chatCell.layoutIfNeeded()
-    }
+//    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        let chatCell = cell as! MessageCell
+//        guard let Message = dataSource?.message(for: indexPath) else {
+//                 fatalError("Message not defined for \(indexPath)")
+//             }
+//
+//        let chatMessage = Message
+//        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
+//
+//        // Update UI for cell
+//        if chatMessage.user.userId != currentUser.userId {
+//            chatCell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
+//        } else {
+//            chatCell.updateLayoutForBubbleStyle(positionInBlock)
+//        }
+//
+//        //chatCell.layoutIfNeeded()
+//    }
     
 }
 
