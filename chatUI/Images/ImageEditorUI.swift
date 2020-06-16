@@ -33,6 +33,8 @@ class ImageEditorUI : UIView {
     var tempImageView: UIImageView = {
          let imageView = UIImageView()
          imageView.contentMode = .scaleAspectFit
+         imageView.backgroundColor = .red
+         imageView.clipsToBounds = true
          imageView.isUserInteractionEnabled = true
          return imageView
          
@@ -101,6 +103,7 @@ class ImageEditorUI : UIView {
             guard let height = img?.size.height else { return }
             imageViewHeight.constant = height
             drawViewHeight.constant = height
+            self.layoutIfNeeded()
         }
     }
     
@@ -356,6 +359,8 @@ extension ImageEditorUI: TouchDrawViewDelegate, ToolsDelegate {
         textView.isScrollEnabled = false
         textView.delegate = self
         self.tempImageView.addSubview(textView)
+       
+   
         addGestures(view: textView)
         activeTextView = textView
         textView.becomeFirstResponder()
@@ -550,7 +555,7 @@ extension ImageEditorUI {
             UIView.animate(withDuration: 0.3,
                            animations: {
                             textView.transform = self.lastTextViewTransform!
-                            textView.center = self.lastTextViewTransCenter!
+                            textView.center(inView: self.tempImageView)
             }, completion: nil)
         } else {
             isCaption = true
@@ -578,23 +583,25 @@ extension ImageEditorUI: StickerEmojiDelegate {
     func EmojiTapped(EmojiName: String) {
         self.removeBottomSheetView()
         var emojiView = UIView()
-        let emojiLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+        let emojiLabel = UILabel()
         emojiLabel.text = EmojiName
-        emojiLabel.font = UIFont.systemFont(ofSize: 50)
+        emojiLabel.font = UIFont.systemFont(ofSize: 120)
         emojiView = emojiLabel
-        emojiView.center = self.center
         self.tempImageView.addSubview(emojiView)
+        emojiLabel.center(inView: tempImageView)
+        emojiLabel.setDimensions(width: 150, height: 150)
         addGestures(view: emojiView)
+        print(emojiLabel.frame)
     }
     
     func StickerTapped(StickerName: String) {
         self.removeBottomSheetView()
         let imageView = UIImageView(image: UIImage(named: StickerName))
         imageView.contentMode = .scaleAspectFit
-        imageView.frame.size = CGSize(width: 150, height: 150)
-        imageView.center = self.center
-        
+
         self.tempImageView.addSubview(imageView)
+        imageView.center(inView: tempImageView)
+        imageView.setDimensions(width: 150, height: 150)
         //Gestures
         addGestures(view: imageView)
     }
