@@ -32,6 +32,8 @@
 		644B2F28244983CA006D2FA5 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */; };
 		644B2F2A2449841D006D2FA5 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644B2F292449841D006D2FA5 /* UIColor+Extension.swift */; };
 		6450A8A32496F4A60013C8CE /* ChatKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6450A8A22496F4A60013C8CE /* ChatKit.swift */; };
+		6450A8A7249989420013C8CE /* chatStickersUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6450A8A6249989420013C8CE /* chatStickersUI.swift */; };
+		6450A8AA2499BD7C0013C8CE /* StickersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6450A8A92499BD7C0013C8CE /* StickersModel.swift */; };
 		64615C432488252F00B09519 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C422488252F00B09519 /* AudioRecorder.swift */; };
 		64615C4C248ED93D00B09519 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4B248ED93D00B09519 /* DataSource.swift */; };
 		64615C5024907EE100B09519 /* MessagesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615C4F24907EE100B09519 /* MessagesTableView.swift */; };
@@ -91,6 +93,8 @@
 		644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		644B2F292449841D006D2FA5 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		6450A8A22496F4A60013C8CE /* ChatKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatKit.swift; sourceTree = "<group>"; };
+		6450A8A6249989420013C8CE /* chatStickersUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatStickersUI.swift; sourceTree = "<group>"; };
+		6450A8A92499BD7C0013C8CE /* StickersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickersModel.swift; sourceTree = "<group>"; };
 		64615C422488252F00B09519 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		64615C4B248ED93D00B09519 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		64615C4F24907EE100B09519 /* MessagesTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableView.swift; sourceTree = "<group>"; };
@@ -134,15 +138,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		64492B3B245911BB0001CA75 /* Sticker */ = {
+		64492B3B245911BB0001CA75 /* Stickers */ = {
 			isa = PBXGroup;
 			children = (
-				64492B40245912090001CA75 /* Cell */,
-				64492B3C245911DB0001CA75 /* StickerViewController.swift */,
-				64492B3E245911F30001CA75 /* EmojisCVDelegate.swift */,
-				649E9F1624685B4F00F06127 /* SwiftGif.swift */,
+				6450A8A82499BD550013C8CE /* StickersModel */,
+				6450A8A4249988E00013C8CE /* ChatStickers */,
+				6450A8A5249989070013C8CE /* EditorStickers */,
 			);
-			path = Sticker;
+			path = Stickers;
 			sourceTree = "<group>";
 		};
 		64492B40245912090001CA75 /* Cell */ = {
@@ -181,7 +184,7 @@
 				64E443FD2451F03900DA8076 /* Images */,
 				644B2F23244982E7006D2FA5 /* Utils */,
 				644B2F24244982F1006D2FA5 /* Extensions */,
-				64492B3B245911BB0001CA75 /* Sticker */,
+				64492B3B245911BB0001CA75 /* Stickers */,
 				64E60478248575B8000FBBE8 /* Audio */,
 				644B2EF624497FFE006D2FA5 /* AppDelegate.swift */,
 				644B2F0B24498033006D2FA5 /* MessagesView.swift */,
@@ -242,6 +245,7 @@
 		644B2F24244982F1006D2FA5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				649E9F1624685B4F00F06127 /* SwiftGif.swift */,
 				644B2F27244983CA006D2FA5 /* UIView+Extensions.swift */,
 				644B2F292449841D006D2FA5 /* UIColor+Extension.swift */,
 				64674E44244AD7D700E77AFB /* Date+Extension.swift */,
@@ -251,6 +255,32 @@
 				642502F0244E74A3002E1785 /* UIImage+Extension .swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		6450A8A4249988E00013C8CE /* ChatStickers */ = {
+			isa = PBXGroup;
+			children = (
+				6450A8A6249989420013C8CE /* chatStickersUI.swift */,
+			);
+			path = ChatStickers;
+			sourceTree = "<group>";
+		};
+		6450A8A5249989070013C8CE /* EditorStickers */ = {
+			isa = PBXGroup;
+			children = (
+				64492B40245912090001CA75 /* Cell */,
+				64492B3E245911F30001CA75 /* EmojisCVDelegate.swift */,
+				64492B3C245911DB0001CA75 /* StickerViewController.swift */,
+			);
+			path = EditorStickers;
+			sourceTree = "<group>";
+		};
+		6450A8A82499BD550013C8CE /* StickersModel */ = {
+			isa = PBXGroup;
+			children = (
+				6450A8A92499BD7C0013C8CE /* StickersModel.swift */,
+			);
+			path = StickersModel;
 			sourceTree = "<group>";
 		};
 		64615C44248E441700B09519 /* Models */ = {
@@ -421,6 +451,7 @@
 				64E4440D24525D2F00DA8076 /* ToolsView.swift in Sources */,
 				64674E6F244D026700E77AFB /* ContextLabel.swift in Sources */,
 				644B2EF724497FFE006D2FA5 /* AppDelegate.swift in Sources */,
+				6450A8A7249989420013C8CE /* chatStickersUI.swift in Sources */,
 				644B2F2024498115006D2FA5 /* MessageMapCell.swift in Sources */,
 				64E6047A248575D9000FBBE8 /* recordAudio.swift in Sources */,
 				644B2EF924497FFE006D2FA5 /* SceneDelegate.swift in Sources */,
@@ -429,6 +460,7 @@
 				644B2F182449809D006D2FA5 /* MessageCell.swift in Sources */,
 				64615C4C248ED93D00B09519 /* DataSource.swift in Sources */,
 				64492B3D245911DB0001CA75 /* StickerViewController.swift in Sources */,
+				6450A8AA2499BD7C0013C8CE /* StickersModel.swift in Sources */,
 				64492B422459121E0001CA75 /* EmojiCell.swift in Sources */,
 				64615CCB249576FC00B09519 /* MessegesStyle.swift in Sources */,
 				64E444162452612F00DA8076 /* Stroke.swift in Sources */,

@@ -132,6 +132,14 @@ open class MessagesUI : UIView {
     }()
     
     
+    private var stickersView: chatStickersUI = {
+        let view = chatStickersUI()
+        view.backgroundColor = .systemGray6
+        return view
+    }()
+    
+    
+    
     
    private var iconsStackView: UIStackView = {
         let stackView = UIStackView()
@@ -290,7 +298,33 @@ open class MessagesUI : UIView {
     }
        
     /// Send Emoji Button
-    @objc private func didPressSendEmojiButton(_ sender: Any?) {}
+    @objc private func didPressSendEmojiButton(_ sender: Any?) {
+         self.sendButton.currentBackgroundImage?.withTintColor(.systemGray6)
+         self.sendButton.isEnabled = false
+         self.audioButton.currentBackgroundImage?.withTintColor(.systemGray6)
+         self.audioButton.isEnabled = false
+         self.mediaButton.currentBackgroundImage?.withTintColor(.systemGray6)
+         self.mediaButton.isEnabled = false
+         self.moreButton.currentBackgroundImage?.withTintColor(.systemGray6)
+         self.moreButton.isEnabled = false
+
+         
+         
+        if isKeybordShowing {
+             self.stickersView.isHidden = false
+             self.endEditing(true)
+             self.tableView.scrollToBottomRow(animated: false)
+             self.layoutIfNeeded()
+             
+         } else {
+             self.stickersView.isHidden = false
+             self.tableView.scrollToBottomRow(animated: false)
+             UIView.animate(withDuration: 0.3) {
+              self.layoutIfNeeded()
+           }
+           
+         }
+    }
     
     /// Send audio Button
     @objc private func didPressSendAudioButton(_ sender: Any?) {
@@ -352,6 +386,8 @@ extension MessagesUI {
         stackView.addArrangedSubview(lineboardView)
         stackView.addArrangedSubview(inputToolbar)
         stackView.addArrangedSubview(recordAudioView)
+        stackView.addArrangedSubview(stickersView)
+        
       
         recordAudioView.delegate = self
     
@@ -396,10 +432,22 @@ extension MessagesUI {
         recordAudioView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor,height:keyboardHeight - height)
         inputToolbar.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
         recordAudioView.isHidden = true
+       
+        stickersView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
+        let stickersVieweight = stickersView.heightAnchor.constraint(equalToConstant:0)
+        stickersVieweight.isActive = true
+        stickersVieweight.constant = keyboardHeight - height
+      stickersView.isHidden = true
+             
+        
+        
+        
         lineboardView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
         let lineboardViewHeight = lineboardView.heightAnchor.constraint(equalToConstant: 0)
         lineboardViewHeight.isActive = true
         lineboardViewHeight.constant = 1
+        
+        
      
         
         addLayoutGuide(keyboardLayoutGuide)
@@ -448,6 +496,7 @@ extension MessagesUI {
            self.restButton()
            self.isKeybordShowing = true
            self.recordAudioView.isHidden = true
+           self.stickersView.isHidden = true
            self.tableView.scrollToBottomRow(animated: false)
         
        }
