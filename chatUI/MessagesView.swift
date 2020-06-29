@@ -12,7 +12,7 @@ import UIKit
 class chatUI: MessagesUI {
     override var style: MessegesStyle {
         var style = ChatKit.Styles
-          style.showingAvataer = false
+            style.showingAvataer = false
 //          style.isSupportAudio = false
 //          style.isSupportImages = false
 //          style.isSupportQuickEmoji = false

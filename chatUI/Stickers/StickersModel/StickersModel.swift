@@ -11,12 +11,14 @@ import UIKit
 
 struct stickerPacks {
     var packnames: String?
-    var icon: URL?
+    var iconName: String?
+    var iconURL: URL?
     var stickers: [stickers]?
     init(){}
 }
 
 struct stickers {
     var imageURL: URL?
+    var imageName: String?
     var name: String?
 }

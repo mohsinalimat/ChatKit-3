@@ -120,7 +120,7 @@ class MessageCell: UITableViewCell {
              messageStatusView.isHidden = false
              bubbleView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
          default:
-            avatar.isHidden = false
+             avatar.isHidden = false
              messageStatusView.isHidden = false
              bubbleView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMaxXMaxYCorner]
             

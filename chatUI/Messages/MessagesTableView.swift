@@ -59,14 +59,29 @@ extension MessagesUI: UITableViewDataSource {
         if chatMessage.user.userId != currentUser.userId  {
             if style.showingAvataer == true {
                 cell.isShowingAvatar()
+                cell.layoutIfNeeded()
             } else {
                 cell.isHidingAvater()
+                cell.layoutIfNeeded()
             }
             cell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
+            cell.layoutIfNeeded()
         } else {
             cell.isHidingAvater()
             cell.updateLayoutForBubbleStyle(positionInBlock)
+            cell.layoutIfNeeded()
         }
+        
+        switch positionInBlock {
+        case .bottom, .single:
+            /// the last row (date show always)
+            cell.messageStatusView.isHidden = false
+             cell.layoutIfNeeded()
+        default:
+            cell.messageStatusView.isHidden = true
+             cell.layoutIfNeeded()
+        }
+        
 
         cell.styles = self.style as! chatUIStyle
         cell.bind(withMessage:  chatMessage)
@@ -80,24 +95,43 @@ extension MessagesUI: UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-//    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        let chatCell = cell as! MessageCell
-//        guard let Message = dataSource?.message(for: indexPath) else {
-//                 fatalError("Message not defined for \(indexPath)")
-//             }
-//
-//        let chatMessage = Message
-//        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
-//
-//        // Update UI for cell
-//        if chatMessage.user.userId != currentUser.userId {
-//            chatCell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
-//        } else {
-//            chatCell.updateLayoutForBubbleStyle(positionInBlock)
-//        }
-//
-//        //chatCell.layoutIfNeeded()
-//    }
+    
+    func updateCell(path: IndexPath){
+        tableView.beginUpdates()
+        tableView.reloadRows(at: [path], with: .none) //try other animations
+        tableView.endUpdates()
+    }
+    
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cell = cell as! MessageCell
+        guard let Message = dataSource?.message(for: indexPath) else {
+                 fatalError("Message not defined for \(indexPath)")
+             }
+
+        let chatMessage = Message
+        let positionInBlock = MessagesViewModel.shared.getPositionInBlockForMessageAtIndex(indexPath.section, indexPath.row)
+
+        // Update UI for cell
+        if chatMessage.user.userId != currentUser.userId {
+            cell.updateLayoutForBubbleStyleIsIncoming(positionInBlock)
+            cell.layoutIfNeeded()
+        } else {
+            cell.updateLayoutForBubbleStyle(positionInBlock)
+            cell.layoutIfNeeded()
+        }
+        
+        switch positionInBlock {
+        case .bottom, .single:
+            /// the last row (date show always)
+            cell.messageStatusView.isHidden = false
+            cell.layoutIfNeeded()
+        default:
+            cell.messageStatusView.isHidden = true
+            cell.layoutIfNeeded()
+        }
+        
+        
+    }
     
 }
 
@@ -196,12 +230,5 @@ extension MessagesUI: UITableViewDelegate {
          return UITargetedPreview(view: cell, parameters: parameters)
      }
     
-    
-    private func updateCell(row: Int,section: Int){
-        let indexPath = NSIndexPath(row: row, section: section)
-        tableView.beginUpdates()
-        tableView.reloadRows(at: [(indexPath as IndexPath)], with: UITableView.RowAnimation.automatic)
-        tableView.endUpdates()
-    }
-    
+
 }

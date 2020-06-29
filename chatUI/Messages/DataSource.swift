@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Used to provide messages to the `MSGCollectionView`
+/// Used to provide messages to the `TableView`
 public protocol DataSource: NSObjectProtocol {
 
     func numberOfSections() -> Int

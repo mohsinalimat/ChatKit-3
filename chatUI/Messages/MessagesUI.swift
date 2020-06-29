@@ -17,11 +17,15 @@ import UIKit
 
 open class MessagesUI : UIView {
  
+    /// ------------------------------------
     /// The data source for the messenger
     weak var dataSource: DataSource?
     weak var inputDelegate: inputDelegate?
     
+    /// ------------------------------------
     public var currentUser: User!
+    
+    /// ------------------------------------
     
    lazy var tableView : UITableView = {
         let tbl = UITableView(frame: .zero, style: .grouped)
@@ -45,6 +49,7 @@ open class MessagesUI : UIView {
     }()
     
     
+    /// ------------------------------------
    private lazy var messageTextView: GrowingTextView = {
         let tex = GrowingTextView()
         tex.placeholder = style.inputPlaceholder
@@ -62,6 +67,7 @@ open class MessagesUI : UIView {
         return tex
     }()
     
+    /// ------------------------------------
     private var sendButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendTextButton), for: UIControl.Event.touchUpInside)
@@ -70,6 +76,8 @@ open class MessagesUI : UIView {
         return button
      }()
     
+    
+    /// ------------------------------------
     private var mediaButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendFileButton), for: UIControl.Event.touchUpInside)
@@ -77,6 +85,7 @@ open class MessagesUI : UIView {
          return button
      }()
     
+    /// ------------------------------------
     private var audioButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendAudioButton), for: UIControl.Event.touchUpInside)
@@ -84,6 +93,7 @@ open class MessagesUI : UIView {
      }()
     
     
+    /// ------------------------------------
     private var emojiButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendEmojiButton), for: UIControl.Event.touchUpInside)
@@ -91,6 +101,7 @@ open class MessagesUI : UIView {
          return button
      }()
     
+    /// ------------------------------------
     private var moreButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(didPressSendMoreButton), for: UIControl.Event.touchUpInside)
@@ -98,33 +109,29 @@ open class MessagesUI : UIView {
      }()
     
     
-    private var buttonView: UIView = {
-         let buttonView = UIView()
-         buttonView.backgroundColor = .clear
-         buttonView.clipsToBounds = true
-         return buttonView
-     }()
-
-    
+    /// ------------------------------------
      var lineboardView: UIView = {
          let lineboardView = UIView()
          lineboardView.backgroundColor = .systemGray6
          return lineboardView
      }()
     
-   
+   /// ------------------------------------
     private var inputToolbar: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         return view
     }()
     
+    /// ------------------------------------
     private var quickEmojiV: quickEmojiView = {
         let view = quickEmojiView()
         view.backgroundColor = .clear
         return view
     }()
     
+    
+    /// ------------------------------------
     private var recordAudioView: recordAudio = {
         let view = recordAudio()
         view.backgroundColor = .systemGray6
@@ -132,6 +139,7 @@ open class MessagesUI : UIView {
     }()
     
     
+    /// ------------------------------------
     private var stickersView: chatStickersUI = {
         let view = chatStickersUI()
         view.backgroundColor = .systemGray6
@@ -140,7 +148,7 @@ open class MessagesUI : UIView {
     
     
     
-    
+    /// ------------------------------------
    private var iconsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.backgroundColor = .clear
@@ -152,7 +160,7 @@ open class MessagesUI : UIView {
     }()
     
     
-    
+    /// ------------------------------------
     private var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.backgroundColor = .clear
@@ -245,7 +253,6 @@ open class MessagesUI : UIView {
                 }
         })
         
-        self.layoutIfNeeded()
     }
     
     /// remove a quick Emoji
@@ -299,16 +306,13 @@ open class MessagesUI : UIView {
        
     /// Send Emoji Button
     @objc private func didPressSendEmojiButton(_ sender: Any?) {
-         self.sendButton.currentBackgroundImage?.withTintColor(.systemGray6)
          self.sendButton.isEnabled = false
-         self.audioButton.currentBackgroundImage?.withTintColor(.systemGray6)
          self.audioButton.isEnabled = false
-         self.mediaButton.currentBackgroundImage?.withTintColor(.systemGray6)
          self.mediaButton.isEnabled = false
-         self.moreButton.currentBackgroundImage?.withTintColor(.systemGray6)
          self.moreButton.isEnabled = false
 
-         
+        self.recordAudioView.isHidden = true
+        self.stickersView.isHidden = true
          
         if isKeybordShowing {
              self.stickersView.isHidden = false
@@ -328,16 +332,14 @@ open class MessagesUI : UIView {
     
     /// Send audio Button
     @objc private func didPressSendAudioButton(_ sender: Any?) {
-        self.sendButton.currentBackgroundImage?.withTintColor(.systemGray6)
         self.sendButton.isEnabled = false
-        self.emojiButton.currentBackgroundImage?.withTintColor(.systemGray6)
         self.emojiButton.isEnabled = false
-        self.mediaButton.currentBackgroundImage?.withTintColor(.systemGray6)
         self.mediaButton.isEnabled = false
-        self.moreButton.currentBackgroundImage?.withTintColor(.systemGray6)
         self.moreButton.isEnabled = false
-
         
+        
+        recordAudioView.isHidden = true
+        stickersView.isHidden = true
         
        if isKeybordShowing {
             self.recordAudioView.isHidden = false
@@ -353,6 +355,8 @@ open class MessagesUI : UIView {
           }
           
         }
+        
+       
 
         
     }
@@ -360,15 +364,10 @@ open class MessagesUI : UIView {
     
 
     private func restButton() {
-        self.sendButton.currentBackgroundImage?.withTintColor(.mainBlue)
         self.sendButton.isEnabled = true
-        self.emojiButton.currentBackgroundImage?.withTintColor(.mainBlue)
         self.emojiButton.isEnabled = true
-        self.mediaButton.currentBackgroundImage?.withTintColor(.mainBlue)
         self.mediaButton.isEnabled = true
-        self.moreButton.currentBackgroundImage?.withTintColor(.mainBlue)
         self.moreButton.isEnabled = true
-        self.audioButton.currentBackgroundImage?.withTintColor(.mainBlue)
         self.audioButton.isEnabled = true
     }
     
@@ -382,31 +381,29 @@ extension MessagesUI {
     private func setupUIElements() {
         addSubview(tableView)
     
+        /// ------------------------------------
         addSubview(stackView)
         stackView.addArrangedSubview(lineboardView)
         stackView.addArrangedSubview(inputToolbar)
         stackView.addArrangedSubview(recordAudioView)
         stackView.addArrangedSubview(stickersView)
         
-      
+       /// ------------------------------------
         recordAudioView.delegate = self
     
-        
-        
-        
+        /// ------------------------------------
         inputToolbar.addSubview(messageTextView)
         inputToolbar.addSubview(sendButton)
         inputToolbar.addSubview(iconsStackView)
         inputToolbar.addSubview(emojiButton)
-        
 
-        
-       // buttonView.addSubview(iconsStackView)
-        
+        /// ------------------------------------
         iconsStackView.addArrangedSubview(moreButton)
         iconsStackView.addArrangedSubview(mediaButton)
         iconsStackView.addArrangedSubview(audioButton)
     
+        
+        /// ------------------------------------
         
        if style.isSupportQuickEmoji {
             sendButton.setBackgroundImage(style.quickEmojiIcon.withTintColor(style.inputIconsColor), for: .normal)
@@ -416,64 +413,66 @@ extension MessagesUI {
             sendButton.tag = 1
         }
        
+        /// ------------------------------------
+        
         moreButton.setBackgroundImage(style.moreIcon.withTintColor(style.inputIconsColor), for: .normal)
         mediaButton.setBackgroundImage(style.mediaIcon.withTintColor(style.inputIconsColor), for: .normal)
         emojiButton.setBackgroundImage(style.stickersIcon.withTintColor(style.inputIconsColor), for: .normal)
         audioButton.setBackgroundImage(style.audioIcon.withTintColor(style.inputIconsColor), for: .normal)
-
-
      
     }
     
     
     private func setupConstraints() {
 
+        
+        /// ------------------------------------
         let height = self.safeAreaInsets.bottom
         recordAudioView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor,height:keyboardHeight - height)
+        
+        /// ------------------------------------
+        stickersView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor,height:keyboardHeight - height)
+        
+        /// ------------------------------------
         inputToolbar.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
         recordAudioView.isHidden = true
+        stickersView.isHidden = true
        
-        stickersView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
-        let stickersVieweight = stickersView.heightAnchor.constraint(equalToConstant:0)
-        stickersVieweight.isActive = true
-        stickersVieweight.constant = keyboardHeight - height
-      stickersView.isHidden = true
-             
-        
-        
-        
-        lineboardView.anchor(left: stackView.leftAnchor,right:stackView.rightAnchor)
+        /// ------------------------------------
         let lineboardViewHeight = lineboardView.heightAnchor.constraint(equalToConstant: 0)
         lineboardViewHeight.isActive = true
         lineboardViewHeight.constant = 1
         
-        
-     
-        
+        /// ------------------------------------
         addLayoutGuide(keyboardLayoutGuide)
-    
         stackView.anchor(top: tableView.bottomAnchor,left: leftAnchor,bottom: keyboardLayoutGuide.topAnchor,right: rightAnchor)
     
+        /// ------------------------------------
         buttonViewLeftConstraint = iconsStackView.leftAnchor.constraint(equalTo: inputToolbar.leftAnchor)
         iconsStackView.anchor(bottom: messageTextView.bottomAnchor
                ,paddingBottom: 5)
         buttonViewLeftConstraint.isActive = true
-        
         iconsStackView.spacing = 15
         moreButton.setDimensions(width: 25, height: 25)
         mediaButton.setDimensions(width: 25, height: 25)
         audioButton.setDimensions(width: 25, height: 25)
         
+        /// ------------------------------------
         audioButton.isHidden = !style.isSupportAudio
         mediaButton.isHidden = !style.isSupportImages
         moreButton.isHidden = !style.isSupportMap
         
         
+        /// ------------------------------------
         tableView.anchor(top: safeAreaLayoutGuide.topAnchor,left: leftAnchor,right: rightAnchor)
     
+        /// ------------------------------------
         sendButton.anchor(bottom: messageTextView.bottomAnchor, right: inputToolbar.rightAnchor,paddingBottom: 5, paddingRight: 10)
+        
+        /// ------------------------------------
         emojiButton.anchor(bottom: messageTextView.bottomAnchor, right: messageTextView.rightAnchor,paddingBottom: 5, paddingRight: 5)
         
+        /// ------------------------------------
         messageTextView.anchor(top: inputToolbar.topAnchor,left: iconsStackView.rightAnchor,bottom: inputToolbar.bottomAnchor,right: sendButton.leftAnchor, paddingTop: 5,paddingLeft: 10,paddingBottom: 5,paddingRight: 5)
         
         
@@ -497,6 +496,7 @@ extension MessagesUI {
            self.isKeybordShowing = true
            self.recordAudioView.isHidden = true
            self.stickersView.isHidden = true
+           self.layoutIfNeeded()
            self.tableView.scrollToBottomRow(animated: false)
         
        }
@@ -504,6 +504,7 @@ extension MessagesUI {
     // keyboard Will hide
     @objc open dynamic func keyboardWillHide(_ notification: Notification) {
          self.isKeybordShowing = false
+         self.layoutIfNeeded()
        }
     
     

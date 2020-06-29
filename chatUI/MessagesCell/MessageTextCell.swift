@@ -128,5 +128,7 @@ class MessageTextCell: MessageCell {
         }
     }
     
+    
+    
 
 }
